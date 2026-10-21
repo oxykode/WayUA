@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Плануйте безпечні мультимодальні маршрути з України до Європи з урахуванням часу на кордоні та пересадки.">
+  <title>WayUA — Мультимодальні поїздки до Європи</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            copy: {
+              primary: "#0F172A",
+              secondary: "#515F78"
+            },
+            brand: {
+              primary: "#0A192F",
+              secondary: "#1E3A8A",
+              accent: "#00F0FF",
+              "accent-hover": "#00D4E0",
+              "accent-active": "#00BFCB",
+              tint: "rgba(0, 240, 255, 0.1)"
+            },
+            page: "#F2F3FF",
+            muted: "#E2E7FF",
+            footer: "#050E1A",
+            success: "#10B981",
+            "success-ink": "#047857",
+            danger: "#DC2626",
+            "muted-inverse": "#94A3B8",
+            overlay: "rgba(255, 255, 255, 0.1)"
+          },
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            brand: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"]
+          },
+          fontSize: {
+            caption: "10px",
+            "body-xs": "12px",
+            "body-sm": "13px",
+            body: "14px",
+            "body-lg": "18px",
+            "heading-sm": "24px",
+            "heading-md": "32px",
+            hero: "clamp(2rem, 3.8vw, 3rem)",
+            "section-mobile": "clamp(24px, 7vw, 28px)"
+          },
+          borderRadius: {
+            control: "6px",
+            panel: "20px"
+          },
+          lineHeight: {
+            body: "1.5",
+            heading: "1.2"
+          },
+          boxShadow: {
+            card: "0 2px 4px rgba(15, 23, 42, 0.03)",
+            hero: "0 20px 40px rgba(0, 0, 0, 0.2)"
+          },
+          transitionDuration: {
+            180: "180ms"
+          },
+          spacing: {
+            "field-icon": "38px"
+          },
+          width: {
+            "menu-icon": "18px"
+          },
+          minHeight: {
+            timeline: "68px"
+          },
+          maxWidth: {
+            "hero-copy": "660px",
+            "section-intro": "380px",
+            "cta-copy": "620px",
+            "footer-copy": "300px"
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-page font-sans text-body leading-body text-copy-primary">
+  <a class="fixed left-2 top-2 z-[1000] -translate-y-[200%] rounded-control bg-white px-3 py-2 text-copy-primary focus:translate-y-0 focus:outline focus:outline-[3px] focus:outline-slate-900 focus:outline-offset-2 focus:shadow-[0_0_0_5px_#FFFFFF]" href="#home">Перейти до основного вмісту</a>
+
+  <header class="bg-page px-6 py-4 text-copy-primary max-[600px]:px-4">
+    <div class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-3 rounded-panel border border-muted bg-white px-4 py-2 shadow-card max-[600px]:grid max-[600px]:grid-cols-[minmax(0,1fr)_auto]">
+      <a class="inline-flex shrink-0 items-center gap-2 font-brand text-body-lg font-extrabold text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary focus-visible:ring-offset-2 max-[360px]:gap-1 max-[360px]:text-body" href="#home" aria-label="WayUA — на головну">
+        <img class="h-9 w-9 rounded-control object-contain max-[600px]:h-8 max-[600px]:w-8" src="assets/icons/logo.svg" alt="" aria-hidden="true">
+        <span><span class="text-brand-secondary">Way</span>UA</span>
+      </a>
+      <button class="mobile-menu-button hidden h-11 w-11 shrink-0 flex-col items-center justify-center gap-1 rounded-control border border-muted bg-page text-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary focus-visible:ring-offset-2 max-[1265px]:inline-flex" type="button" aria-label="Відкрити меню" aria-expanded="false" aria-controls="primary-navigation">
+        <span class="block h-0.5 w-menu-icon rounded-full bg-current" aria-hidden="true"></span>
+        <span class="block h-0.5 w-menu-icon rounded-full bg-current" aria-hidden="true"></span>
+        <span class="block h-0.5 w-menu-icon rounded-full bg-current" aria-hidden="true"></span>
+      </button>
+      <nav class="order-3 hidden w-full flex-1 flex-col gap-0 rounded-xl border border-muted bg-white p-2 shadow-card min-[1266px]:order-none min-[1266px]:flex min-[1266px]:w-auto min-[1266px]:flex-row min-[1266px]:items-center min-[1266px]:justify-center min-[1266px]:gap-2 min-[1266px]:border-0 min-[1266px]:p-0 min-[1266px]:shadow-none" id="primary-navigation" aria-label="Головна навігація">
+        <a class="flex min-h-11 flex-1 items-center justify-center [overflow-wrap:anywhere] rounded-xl px-3 py-2 text-center text-body-sm font-bold leading-heading text-copy-secondary transition-[color,background-color] duration-180 hover:bg-page hover:text-copy-primary focus-visible:bg-page focus-visible:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary min-[1266px]:whitespace-nowrap" href="#search">Пошук маршрутів</a>
+        <a class="flex min-h-11 flex-1 items-center justify-center [overflow-wrap:anywhere] rounded-xl px-3 py-2 text-center text-body-sm font-bold leading-heading text-copy-secondary transition-[color,background-color] duration-180 hover:bg-page hover:text-copy-primary focus-visible:bg-page focus-visible:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary min-[1266px]:whitespace-nowrap" href="#how-it-works">Як працює</a>
+        <a class="flex min-h-11 flex-1 items-center justify-center [overflow-wrap:anywhere] rounded-xl px-3 py-2 text-center text-body-sm font-bold leading-heading text-copy-secondary transition-[color,background-color] duration-180 hover:bg-page hover:text-copy-primary focus-visible:bg-page focus-visible:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary min-[1266px]:whitespace-nowrap" href="#routes">Напрямки</a>
+        <a class="flex min-h-11 flex-1 items-center justify-center [overflow-wrap:anywhere] rounded-xl px-3 py-2 text-center text-body-sm font-bold leading-heading text-copy-secondary transition-[color,background-color] duration-180 hover:bg-page hover:text-copy-primary focus-visible:bg-page focus-visible:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary min-[1266px]:whitespace-nowrap" href="#benefits">База знань</a>
+        <a class="flex min-h-11 flex-1 items-center justify-center [overflow-wrap:anywhere] rounded-xl px-3 py-2 text-center text-body-sm font-bold leading-heading text-copy-secondary transition-[color,background-color] duration-180 hover:bg-page hover:text-copy-primary focus-visible:bg-page focus-visible:text-copy-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary min-[1266px]:whitespace-nowrap" href="#contact">Контакти</a>
+      </nav>
+      <div class="ml-auto flex shrink-0 items-center gap-3 max-[600px]:col-span-2 max-[600px]:col-start-1 max-[600px]:row-start-2 max-[600px]:ml-0 max-[600px]:w-full">
+        <div class="inline-flex items-center gap-1 rounded-xl border border-muted bg-page p-1 max-[1265px]:hidden" role="group" aria-label="Мова інтерфейсу">
+          <button class="grid min-h-11 min-w-11 place-items-center rounded-control bg-brand-primary text-body-xs font-bold text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary" type="button" lang="uk" aria-pressed="true">UA</button>
+          <button class="min-h-11 min-w-11 rounded-control text-body-xs font-bold text-copy-secondary disabled:cursor-not-allowed disabled:opacity-75" type="button" lang="en" aria-pressed="false" disabled title="Англомовна версія ще не доступна">EN</button>
+        </div>
+        <a class="inline-flex min-h-11 flex-none items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-brand-accent px-4 py-2 text-body-xs font-bold text-brand-primary transition-colors duration-180 hover:bg-brand-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary active:bg-brand-accent-active max-[600px]:w-full max-[600px]:flex-1 max-[600px]:whitespace-normal" href="#search">Запланувати поїздку <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main id="home" tabindex="-1">
+    <section class="bg-brand-primary py-16 text-white max-[760px]:py-10" aria-labelledby="page-title">
+      <div class="mx-auto grid max-w-7xl grid-cols-1 items-center gap-[clamp(24px,5vw,48px)] px-6 min-[761px]:grid-cols-[minmax(0,1.2fr)_minmax(0,0.9fr)] max-[760px]:gap-6 max-[600px]:px-4">
+        <div class="min-w-0">
+          <div class="mb-4 inline-block rounded-control bg-brand-tint px-3 py-2 text-body-sm text-brand-accent">
+            <span aria-hidden="true">✓</span>
+            Перша мультимодальна платформа із захистом від запізнень
+          </div>
+          <h1 class="mb-4 text-hero font-extrabold leading-heading tracking-tight text-white" id="page-title">
+            Подорожуй до Європи
+            <span class="mt-1 block text-brand-accent">без страху пропустити свій літак</span>
+          </h1>
+          <p class="mb-6 mt-0 max-w-hero-copy text-body leading-body text-muted-inverse">
+            Об’єднуємо потяги УЗ, міжнародні автобуси та лоукостери ЄС у єдиний маршрут.
+            Розраховуємо безпечний Smart Buffer (4–5 годин) на перетин митниці та гарантуємо заміну квитка при затримці.
+          </p>
+          <ul class="flex flex-wrap items-center gap-4 text-body-sm text-white">
+            <li class="inline-flex items-center gap-1 whitespace-nowrap"><span class="text-brand-accent" aria-hidden="true">✓</span>Без прихованих комісій</li>
+            <li class="inline-flex items-center gap-1 whitespace-nowrap"><span class="text-brand-accent" aria-hidden="true">✓</span>Єдиний квиток у смартфон</li>
+            <li class="inline-flex items-center gap-1 whitespace-nowrap"><span class="text-brand-accent" aria-hidden="true">✓</span>99.4% успішних стиковок</li>
+          </ul>
+        </div>
+        <img class="block max-h-[380px] w-full object-contain max-[760px]:max-h-[300px]" src="assets/image/Interactive%20Corridor%20Schema%20Card(1).svg" alt="Схема транспортного коридору з пересадками між видами транспорту">
+      </div>
+
+      <section class="mx-auto mt-10 w-[calc(100%-48px)] max-w-7xl rounded-xl border border-muted bg-white p-6 text-copy-primary shadow-hero max-[600px]:mt-6 max-[600px]:w-[calc(100%-32px)] max-[600px]:p-4" id="search" aria-labelledby="search-title">
+        <div class="mb-4 border-b border-muted pb-4">
+          <h2 class="text-body-lg font-bold" id="search-title"><span class="mr-2 inline-block h-2 w-2 rounded-full bg-success align-middle" aria-hidden="true"></span>Пошук безпечного маршруту</h2>
+        </div>
+        <form class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_minmax(140px,0.7fr)_auto] items-end gap-3 max-[1024px]:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] max-[760px]:grid-cols-[minmax(0,1fr)_auto]" action="#routes" method="get">
+          <div class="min-w-0 col-start-1 row-start-1 max-[760px]:col-span-2">
+            <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="origin">Звідки</label>
+            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('./assets/icons/Icon.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="origin" name="origin" type="text" placeholder="Київ, Україна" autocomplete="address-level2" required>
+          </div>
+          <button class="col-start-2 row-start-1 mb-px inline-flex h-11 w-11 items-center justify-center justify-self-center rounded-full border border-muted bg-page text-brand-secondary transition-colors duration-180 hover:border-brand-secondary hover:bg-muted focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary max-[760px]:hidden" type="button" aria-label="Поміняти місцями міста" aria-controls="origin destination" id="swap-cities">
+            <span aria-hidden="true">↔</span>
+          </button>
+          <div class="min-w-0 col-start-3 row-start-1 max-[760px]:col-span-2 max-[760px]:col-start-1 max-[760px]:row-start-3">
+            <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="destination">Куди</label>
+            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('./assets/icons/Icon2.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="destination" name="destination" type="text" placeholder="Рим, Італія" autocomplete="address-level2" required>
+          </div>
+          <div class="min-w-0 col-start-4 row-start-1 max-[1024px]:col-span-3 max-[1024px]:col-start-1 max-[1024px]:row-start-2 max-[760px]:col-span-2 max-[760px]:row-start-4">
+            <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="departure-date">Дата виїзду</label>
+            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('./assets/icons/Icon3.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="departure-date" name="departure-date" type="date">
+          </div>
+          <label class="col-span-5 row-start-2 flex items-center gap-2 border-t border-muted pt-3 text-body-sm text-brand-primary max-[1024px]:col-span-3 max-[1024px]:row-start-3 max-[760px]:col-span-2 max-[760px]:row-start-5">
+            <input class="h-4 w-4 accent-success focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary" type="checkbox" id="buffer" name="buffer" value="1" checked>
+            Smart Buffer 4.5h (Рекомендовано)
+          </label>
+          <span class="sr-only" id="swap-status" aria-live="polite"></span>
+          <button class="col-start-5 row-start-1 min-h-11 whitespace-nowrap rounded-xl bg-brand-accent px-5 py-2 text-body-xs font-semibold text-brand-primary transition-colors duration-180 hover:bg-brand-accent-hover active:bg-brand-accent-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary max-[1024px]:col-span-3 max-[1024px]:col-start-1 max-[1024px]:row-start-4 max-[760px]:col-span-2 max-[760px]:row-start-6 max-[760px]:w-full" type="submit">Знайти безпечний маршрут</button>
+        </form>
+      </section>
+    </section>
+
+    <aside class="bg-page py-6 text-copy-primary" aria-labelledby="ticker-title">
+      <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 max-[1024px]:flex-col max-[1024px]:items-stretch max-[600px]:px-4">
+        <div class="flex shrink-0 items-center gap-3">
+          <span class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-primary text-body-lg text-brand-accent" aria-hidden="true"><img class="h-5 w-5 object-contain" src="assets/icons/Container.svg" alt=""></span>
+          <div>
+            <h2 class="text-body font-bold" id="ticker-title">Демонстрація часу очікування на кордоні</h2>
+            <p class="text-body-xs text-copy-secondary">Демонстраційні значення; оновлення в реальному часі не підключено.</p>
+          </div>
+        </div>
+        <div class="grid flex-1 grid-cols-4 gap-3 max-[1024px]:grid-cols-2 max-[360px]:grid-cols-1">
+          <article class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-muted bg-white p-3 text-center"><h3 class="max-w-full break-words text-body-xs font-semibold text-copy-secondary">Шегині — Медика</h3><strong class="text-body leading-heading">1г 15хв</strong><span class="text-body-xs font-semibold text-success-ink">● Оптимально</span></article>
+          <article class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-muted bg-white p-3 text-center"><h3 class="max-w-full break-words text-body-xs font-semibold text-copy-secondary">Краківець — Корчова</h3><strong class="text-body leading-heading">2г 40хв</strong><span class="text-body-xs font-semibold text-copy-secondary">● Штатно</span></article>
+          <article class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-muted bg-white p-3 text-center"><h3 class="max-w-full break-words text-body-xs font-semibold text-copy-secondary">Чоп — Захонь</h3><strong class="text-body leading-heading">0г 50хв</strong><span class="text-body-xs font-semibold text-success-ink">● Швидко</span></article>
+          <article class="flex min-w-0 flex-col items-center justify-center gap-1 rounded-xl border border-muted bg-white p-3 text-center"><h3 class="max-w-full break-words text-body-xs font-semibold text-copy-secondary">Ягодин — Дорогуськ</h3><strong class="text-body leading-heading">3г 20хв</strong><span class="text-body-xs font-semibold text-danger">● Навантажено</span></article>
+        </div>
+      </div>
+    </aside>
+
+    <section class="px-6 py-16 max-[760px]:py-8 max-[600px]:px-4" id="benefits" aria-labelledby="benefits-title">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-6 grid grid-cols-[minmax(0,1.2fr)_minmax(220px,0.8fr)] items-end gap-8 max-[760px]:grid-cols-1 max-[760px]:gap-3">
+          <div><p class="text-body-xs font-semibold uppercase tracking-[0.08em] text-brand-secondary">Надійна архітектура поїздки</p><h2 class="mt-2 mb-0 text-heading-md font-bold max-[760px]:text-section-mobile" id="benefits-title">Чому тисячі українців обирають WayUA?</h2></div>
+          <p class="mb-1 max-w-section-intro justify-self-end text-body text-copy-secondary max-[760px]:justify-self-start">Ми перетворили складний транзит через сусідні країни на простий та прогнозований процес.</p>
+        </div>
+              <div class="grid grid-cols-3 gap-6 max-[1024px]:grid-cols-2 max-[600px]:grid-cols-1">
+          <article class="flex min-h-full flex-col rounded-xl border border-muted bg-white p-5 shadow-card transition-shadow hover:shadow-lg">
+            <span class="mb-3 grid h-11 w-11 place-items-center rounded-control bg-brand-tint"><img class="h-5 w-5 object-contain" src="assets/icons/time.svg" alt="" aria-hidden="true"></span>
+            <p class="mb-2 text-body-xs font-bold uppercase tracking-[0.04em] text-brand-secondary" lang="en">Smart Buffer Engine</p><h3 class="mb-3 text-body-lg font-bold">Розумний часовий зазор</h3>
+            <p class="mb-4 text-body-sm text-copy-secondary">Наш AI-алгоритм аналізує черги на митниці в реальному часі та автоматично закладає 4–5 годин на перетин кордону, щоб ви спокійно встигли на свій рейс.</p>
+            <div class="mt-auto border-t border-muted pt-3 text-body-sm font-bold"><a class="text-success-ink hover:underline focus-visible:underline focus-visible:outline-none" href="#how-it-works">Динамічний розрахунок затримок →</a></div>
+          </article>
+          <article class="flex min-h-full flex-col rounded-xl border border-muted bg-white p-5 shadow-card transition-shadow hover:shadow-lg">
+            <span class="mb-3 grid h-11 w-11 place-items-center rounded-control bg-brand-tint"><img class="h-5 w-5 object-contain" src="assets/icons/plane.svg" alt="" aria-hidden="true"></span>
+            <p class="mb-2 text-body-xs font-bold uppercase tracking-[0.04em] text-brand-secondary" lang="en">Multi-modal booking</p><h3 class="mb-3 text-body-lg font-bold">Все в одному квитку</h3>
+            <p class="mb-4 text-body-sm text-copy-secondary">Більше не потрібно тримати відкритими 10 сайтів. Бронюйте потяг УЗ, автобус та літак (Ryanair / WizzAir) за один клік із єдиним чеком.</p>
+            <div class="mt-auto border-t border-muted pt-3 text-body-sm font-bold"><a class="text-brand-secondary hover:underline focus-visible:underline focus-visible:outline-none" href="#routes">Єдиний наскрізний маршрутний лист →</a></div>
+          </article>
+          <article class="flex min-h-full flex-col rounded-xl border border-muted bg-white p-5 shadow-card transition-shadow hover:shadow-lg">
+            <span class="mb-3 grid h-11 w-11 place-items-center rounded-control bg-brand-tint"><img class="h-5 w-5 object-contain" src="assets/icons/cost.svg" alt="" aria-hidden="true"></span>
+            <p class="mb-2 text-body-xs font-bold uppercase tracking-[0.04em] text-brand-secondary" lang="en">100% Guaranteed transfer</p><h3 class="mb-3 text-body-lg font-bold">Гарантія від запізнення</h3>
+            <p class="mb-4 text-body-sm text-copy-secondary">Якщо автобус затримається на кордоні довше прогнозу — ми безкоштовно перебронюємо квиток на наступний рейс або компенсуємо його вартість.</p>
+            <div class="mt-auto border-t border-muted pt-3 text-body-sm font-bold"><a class="text-success-ink hover:underline focus-visible:underline focus-visible:outline-none" href="#how-it-works">Фінансовий захист пересадки →</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-page px-6 py-16 max-[760px]:py-8 max-[600px]:px-4" id="routes" aria-labelledby="routes-title">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-6 grid grid-cols-[minmax(0,1.2fr)_minmax(220px,0.8fr)] items-end gap-8 max-[1024px]:grid-cols-[minmax(0,1fr)_minmax(180px,0.8fr)] max-[1024px]:gap-4 max-[760px]:grid-cols-1 max-[760px]:gap-3">
+          <div><p class="text-body-xs font-semibold uppercase tracking-[0.08em] text-brand-secondary">Перевірені маршрути</p><h2 class="mb-0 mt-2 text-heading-md font-bold max-[760px]:text-section-mobile" id="routes-title">Популярні безпечні маршрути</h2></div>
+          <p class="mb-1 max-w-section-intro justify-self-end text-body text-copy-secondary max-[760px]:justify-self-start">Готові відстежені стиковки з урахуванням часу на митницю та аеропорт.</p>
+        </div>
+        <div class="grid gap-3">
+          <article class="grid gap-3 rounded-xl bg-white p-4 shadow-card max-[600px]:p-3">
+            <div class="flex items-start justify-between gap-6 border-b border-muted pb-3 max-[1024px]:flex-col max-[1024px]:gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="mb-1 flex flex-wrap items-center gap-2"><h3 class="mr-2 text-body font-bold">Київ → Рим (через Краків)</h3><span class="rounded-full bg-muted px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-secondary">Потяг + автобус + літак</span><span class="rounded-full bg-brand-tint px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-primary">Гарантована стиковка</span></div>
+                <p class="text-body-xs text-copy-secondary">Склад: Потяг УЗ + Автобус + Smart Buffer 4.5h + Літак (WizzAir / Ryanair)</p>
+              </div>
+              <div class="grid shrink-0 grid-cols-[auto_auto] items-center justify-items-end gap-x-3 max-[760px]:w-full max-[760px]:grid-cols-[1fr_auto] max-[760px]:justify-items-start">
+                <div><p class="text-caption text-copy-secondary">Час у дорозі</p><p class="font-semibold">18 год 30 хв</p></div><strong class="whitespace-nowrap text-body">від 3 450 грн</strong>
+                <a class="col-start-2 row-span-2 inline-flex items-center justify-center rounded-xl bg-brand-secondary px-3 py-2 text-caption font-semibold text-white transition-colors hover:bg-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary max-[760px]:justify-self-end" href="#search" aria-label="Обрати маршрут Київ — Рим">Обрати маршрут ↗</a>
+              </div>
+            </div>
+            <ol class="grid min-h-timeline list-none grid-cols-[minmax(150px,1fr)_minmax(120px,2fr)_minmax(150px,1fr)] items-center gap-3 rounded-control bg-page px-3 py-2 max-[760px]:grid-cols-1 max-[760px]:gap-2" aria-label="Маршрут: Київ — Краків — Рим">
+              <li class="flex min-w-0 items-center gap-2"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-white"><img class="h-4 w-4 object-contain" src="assets/icons/Icon.svg" alt="" aria-hidden="true"></span><div class="grid min-w-0 leading-heading"><strong class="text-body-sm"><time datetime="06:30">06:30</time> · Київ-Пасажирський</strong><span class="text-body-xs font-bold">Інтерсіті УЗ №705</span></div></li>
+              <li class="grid justify-items-center gap-1 text-center text-copy-secondary max-[760px]:justify-items-start max-[760px]:pl-4 max-[760px]:text-left"><span class="rounded-full border border-muted bg-white px-2 py-0.5 text-caption font-bold text-brand-primary"><span class="text-success-ink" aria-hidden="true">✓</span> Smart Buffer 4.5h</span><span class="w-full border-t-2 border-dashed border-brand-secondary max-[760px]:ml-2.5 max-[760px]:h-4 max-[760px]:w-0.5 max-[760px]:border-l-2 max-[760px]:border-t-0"></span><p class="text-caption">Шегині–Медика &amp; трансфер у KRK</p></li>
+              <li class="flex min-w-0 items-center justify-end gap-2 text-right max-[760px]:justify-start"><div class="grid min-w-0 leading-heading max-[760px]:order-2"><strong class="text-body-sm"><time datetime="18:45">18:45</time> · Рим Фьюмічіно (FCO)</strong><span class="text-body-xs font-bold">Прямий авіарейс</span></div><span class="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-white max-[760px]:order-1"><img class="h-4 w-4 object-contain" src="assets/icons/Icon2.svg" alt="" aria-hidden="true"></span></li>
+            </ol>
+          </article>
+          <article class="grid gap-3 rounded-xl bg-white p-4 shadow-card max-[600px]:p-3">
+            <div class="flex items-start justify-between gap-6 border-b border-muted pb-3 max-[1024px]:flex-col max-[1024px]:gap-3">
+              <div class="min-w-0 flex-1">
+                <div class="mb-1 flex flex-wrap items-center gap-2"><h3 class="mr-2 text-body font-bold">Львів → Берлін (через Перемишль)</h3><span class="rounded-full bg-muted px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-secondary">Залізничний транзит</span><span class="rounded-full bg-brand-tint px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-primary">Денне сполучення</span></div>
+                <p class="text-body-xs text-copy-secondary">Склад: Потяг УЗ + Smart Buffer 4.0h + Потяг PKP Intercity</p>
+              </div>
+              <div class="grid shrink-0 grid-cols-[auto_auto] items-center justify-items-end gap-x-3 max-[760px]:w-full max-[760px]:grid-cols-[1fr_auto] max-[760px]:justify-items-start">
+                <div><p class="text-caption text-copy-secondary">Час у дорозі</p><p class="font-semibold">14 год 10 хв</p></div><strong class="whitespace-nowrap text-body">від 2 890 грн</strong>
+                <a class="col-start-2 row-span-2 inline-flex items-center justify-center rounded-xl bg-brand-secondary px-3 py-2 text-caption font-semibold text-white transition-colors hover:bg-brand-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary max-[760px]:justify-self-end" href="#search" aria-label="Обрати маршрут Львів — Берлін">Обрати маршрут ↗</a>
+              </div>
+            </div>
+            <ol class="grid min-h-timeline list-none grid-cols-[minmax(150px,1fr)_minmax(120px,2fr)_minmax(150px,1fr)] items-center gap-3 rounded-control bg-page px-3 py-2 max-[760px]:grid-cols-1 max-[760px]:gap-2" aria-label="Маршрут: Львів — Перемишль — Берлін">
+              <li class="flex min-w-0 items-center gap-2"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-white"><img class="h-4 w-4 object-contain" src="assets/icons/Icon.svg" alt="" aria-hidden="true"></span><div class="grid min-w-0 leading-heading"><strong class="text-body-sm"><time datetime="08:15">08:15</time> · Львів Головний</strong><span class="text-body-xs font-bold">Потяг УЗ №715</span></div></li>
+              <li class="grid justify-items-center gap-1 text-copy-secondary max-[760px]:justify-items-start max-[760px]:pl-4 max-[760px]:text-left"><span class="rounded-full border border-muted bg-white px-2 py-0.5 text-caption font-bold text-brand-primary"><span class="text-success-ink" aria-hidden="true">✓</span> Smart Buffer 4.0h</span><span class="w-full border-t-2 border-dashed border-brand-secondary max-[760px]:ml-2.5 max-[760px]:h-4 max-[760px]:w-0.5 max-[760px]:border-l-2 max-[760px]:border-t-0"></span><p class="text-caption">Контроль у Перемишлі</p></li>
+              <li class="flex min-w-0 items-center justify-end gap-2 text-right max-[760px]:justify-start"><div class="grid min-w-0 leading-heading max-[760px]:order-2"><strong class="text-body-sm"><time datetime="22:25">22:25</time> · Berlin Hbf</strong><span class="text-body-xs font-bold">EuroCity EC56</span></div><span class="grid h-9 w-9 shrink-0 place-items-center rounded-control bg-white max-[760px]:order-1"><img class="h-4 w-4 object-contain" src="assets/icons/Icon.svg" alt="" aria-hidden="true"></span></li>
+            </ol>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-page px-6 py-16 max-[760px]:py-8 max-[600px]:px-4" id="how-it-works" aria-labelledby="how-title">
+      <div class="mx-auto max-w-7xl">
+        <div class="mx-auto mb-8 max-w-cta-copy text-center">
+          <p class="text-body-xs font-semibold uppercase tracking-[0.08em] text-brand-secondary">Технологія безпеки</p>
+          <h2 class="mb-3 mt-2 text-heading-md font-bold max-[760px]:text-section-mobile" id="how-title">Як ми захищаємо вашу поїздку від форс-мажорів</h2>
+          <p class="text-body-sm text-copy-secondary">Три надійні рівні AI-моніторингу гарантують, що жодна черга на митниці не зірве ваші плани в Європі.</p>
+        </div>
+        <div class="grid grid-cols-3 gap-4 max-[1024px]:grid-cols-2 max-[760px]:grid-cols-1">
+          <article class="rounded-xl border border-muted bg-white p-5 text-left">
+            <span class="mb-3 inline-flex rounded-full bg-brand-primary px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-accent">Крок 01</span>
+            <h3 class="mb-2 text-body font-bold">Аналіз актуальних черг</h3>
+            <p class="text-body-xs leading-body text-copy-secondary">Система перевіряє затримки на пунктах пропуску (Шегині, Краківець, Медика) за останні 24 години на основі телеметрії.</p>
+          </article>
+          <article class="rounded-xl border border-muted bg-white p-5 text-left">
+            <span class="mb-3 inline-flex rounded-full bg-brand-primary px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-accent">Крок 02</span>
+            <h3 class="mb-2 text-body font-bold">Автоматична стиковка</h3>
+            <p class="text-body-xs leading-body text-copy-secondary">Алгоритм підбирає рейс літака чи потяга в ЄС тільки з урахуванням розрахованого вікна безпеки (4.0 - 5.5 годин).</p>
+          </article>
+          <article class="rounded-xl border border-muted bg-white p-5 text-left">
+            <span class="mb-3 inline-flex rounded-full bg-brand-primary px-2 py-1 text-caption font-bold uppercase leading-heading text-brand-accent">Крок 03</span>
+            <h3 class="mb-2 text-body font-bold">Супровід у дорозі 24/7</h3>
+            <p class="text-body-xs leading-body text-copy-secondary">Якщо щось піде не так, служба підтримки перенаправить вас на альтернативний рейс або поїзд прямо під час поїздки без доплат.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-page px-6 py-16 max-[760px]:py-8 max-[600px]:px-4" aria-labelledby="reviews-title">
+      <div class="mx-auto max-w-7xl">
+        <div class="mb-6 flex items-end justify-between gap-6 max-[760px]:items-start max-[760px]:flex-col">
+          <div><p class="text-body-xs font-semibold uppercase tracking-[0.08em] text-brand-secondary">Реальний досвід подорожей</p><h2 class="mb-0 mt-2 text-heading-md font-bold max-[760px]:text-section-mobile" id="reviews-title">Що кажуть пасажири WayUA</h2></div>
+          <div class="flex items-center gap-2 whitespace-nowrap pb-1 max-[1024px]:flex-wrap max-[1024px]:justify-end max-[1024px]:whitespace-normal max-[760px]:justify-start" role="img" aria-label="Середня оцінка 4,9 з 5 на основі понад 4 800 перевірених подорожей"><span class="text-body-lg leading-none text-brand-accent" aria-hidden="true">★</span><strong class="text-body">4.9/5</strong><span class="text-body-xs text-copy-secondary">(понад 4 800 перевірених подорожей)</span></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 max-[760px]:grid-cols-1">
+          <article class="flex flex-col rounded-xl border border-muted bg-white p-4">
+            <h3 class="sr-only">Відгук Олени Ковальчук</h3>
+            <blockquote class="flex-1 pb-3 text-body-sm italic text-copy-primary">«Найбільше я боялася застрягти на митниці й пропустити літак WizzAir із Варшави. WayUA підібрали потяг із зазором у 4.5 години. На кордоні дійсно була черга, але завдяки буферу я спокійно приїхала в аеропорт за 2 години до вильоту!»</blockquote>
+            <div class="flex items-center gap-2 border-t border-muted pt-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-primary text-caption font-bold text-brand-accent" aria-hidden="true">ОК</span><div><p class="text-body-xs font-bold">Олена Ковальчук</p><p class="text-caption text-brand-secondary">Київ → Варшава → Париж</p></div></div>
+          </article>
+          <article class="flex flex-col rounded-xl border border-muted bg-white p-4">
+            <h3 class="sr-only">Відгук Маркіяна Савченка</h3>
+            <blockquote class="flex-1 pb-3 text-body-sm italic text-copy-primary">«Сервіс — просто знахідка. Отримав один QR-код на весь маршрут. Автобус спізнився на 40 хвилин, але система заздалегідь розрахувала це, і я без жодного нервового зриву встиг на свій пересадний рейс. Рекомендую!»</blockquote>
+            <div class="flex items-center gap-2 border-t border-muted pt-2"><span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-brand-primary text-caption font-bold text-brand-accent" aria-hidden="true">МС</span><div><p class="text-body-xs font-bold">Маркіян Савченко</p><p class="text-caption text-brand-secondary">Львів → Краків → Відень</p></div></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-page px-6 pb-12 max-[600px]:px-4" aria-labelledby="cta-title">
+      <div class="mx-auto max-w-7xl rounded-panel bg-brand-primary p-8 text-white shadow-hero max-[760px]:p-6">
+        <p class="mb-3 inline-block rounded-full bg-brand-tint px-2 py-1 text-body-xs font-bold uppercase text-brand-accent"><span class="mr-1" aria-hidden="true">✈</span>Безстресовий транзит до Європи</p>
+        <h2 class="mb-2 text-heading-md font-bold max-[760px]:text-heading-sm" id="cta-title">Готові до безпечної подорожі без стресу?</h2>
+        <p class="mb-4 max-w-cta-copy text-body-sm text-muted-inverse">Заплануйте свій наскрізний маршрут до ЄС просто зараз та отримайте повну гарантію захисту пересадок від WayUA.</p>
+        <div class="flex flex-wrap gap-2 max-[760px]:flex-col max-[760px]:items-stretch">
+          <a class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-accent px-5 py-2 text-body-xs font-semibold text-brand-primary transition-colors duration-180 hover:bg-brand-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent" href="#search"><span aria-hidden="true">⚡</span>Запланувати поїздку зі Smart Buffer</a>
+          <a class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-2 text-body-xs font-semibold text-white transition-colors duration-180 hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent" href="#search"><span aria-hidden="true">▦</span>Розрахувати ризик запізнення</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-footer px-6 pb-8 pt-12 text-body text-muted-inverse max-[600px]:px-4" id="contact">
+    <div class="mx-auto grid max-w-7xl grid-cols-[2fr_1fr_1fr_1fr] gap-8 border-b border-white/10 pb-12 max-[1024px]:grid-cols-2 max-[1024px]:gap-6 max-[760px]:grid-cols-1 max-[760px]:pb-6">
+      <div class="max-[1024px]:col-span-2 max-[760px]:col-span-1">
+        <a class="mb-3 inline-flex items-center gap-2 rounded text-heading-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#home" aria-label="WayUA — на головну"><span class="grid h-9 w-9 place-items-center rounded-control bg-brand-accent text-body text-brand-primary" aria-hidden="true">W</span><span>Way<span class="text-brand-accent">UA</span></span></a>
+        <p class="mt-3 max-w-footer-copy text-body leading-body text-muted-inverse">WayUA — ваш надійний AI-навігатор у міжнародних поїздках. Поєднуємо транспортні мережі України та Європи в один клік.</p>
+      </div>
+      <div><h2 class="mb-3 text-body font-bold uppercase tracking-[0.04em] text-brand-accent">Навігація</h2><nav class="space-y-2 text-body" aria-label="Навігація у підвалі"><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#search">Пошук маршрутів</a><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#benefits">Переваги Smart Buffer</a><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#routes">Популярні напрямки</a><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#search">Калькулятор ризиків</a></nav></div>
+      <div><h2 class="mb-3 text-body font-bold uppercase tracking-[0.04em] text-brand-accent">Пасажирам</h2><nav class="space-y-2 text-body" aria-label="Інформація для пасажирів"><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#benefits">Гарантійний фонд та компенсації</a><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#how-it-works">Правила перетину кордону</a><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#benefits">База знань &amp; Блог</a><a class="block transition-colors duration-180 hover:text-brand-accent focus-visible:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="#how-it-works">Часті запитання (FAQ)</a></nav></div>
+      <div><h2 class="mb-3 text-body font-bold uppercase tracking-[0.04em] text-brand-accent">Підтримка 24/7</h2><address class="space-y-2 text-body not-italic"><a class="block break-words font-bold text-brand-accent transition-colors duration-180 hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="tel:0800300400"><span class="mr-1 inline-block w-5 text-center" aria-hidden="true">☎</span>0 800 300 400 (Безкоштовно)</a><a class="block break-words transition-colors duration-180 hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="https://t.me/WayUA_Support_Bot"><span class="mr-1 inline-block w-5 text-center text-brand-accent" aria-hidden="true">➤</span>Telegram-бот підтримки WayUA (24/7)</a><a class="block break-words transition-colors duration-180 hover:text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2 focus-visible:ring-offset-footer" href="mailto:support@wayua.com"><span class="mr-1 inline-block w-5 text-center text-brand-accent" aria-hidden="true">✉</span>support@wayua.com</a></address></div>
+    </div>
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 pt-6 text-body-sm text-muted-inverse max-[1024px]:items-start max-[1024px]:flex-col max-[1024px]:gap-3">
+      <p>© 2026 WayUA. Усі права захищено.</p>
+      <div class="flex flex-wrap items-center gap-6 max-[760px]:gap-x-4 max-[760px]:gap-y-2"><span>Політика конфіденційності</span><span>Угода користувача</span><span>Публічна оферта</span></div>
+    </div>
+  </footer>
+
+  <script>
+    const originInput = document.getElementById("origin");
+    const destinationInput = document.getElementById("destination");
+    const swapButton = document.getElementById("swap-cities");
+    const swapStatus = document.getElementById("swap-status");
+    const menuButton = document.querySelector(".mobile-menu-button");
+    const primaryNavigation = document.getElementById("primary-navigation");
+
+    swapButton.addEventListener("click", () => {
+      const originValue = originInput.value;
+      originInput.value = destinationInput.value;
+      destinationInput.value = originValue;
+      originInput.dispatchEvent(new Event("input", { bubbles: true }));
+      destinationInput.dispatchEvent(new Event("input", { bubbles: true }));
+      swapStatus.textContent = `Міста поміняно місцями. Звідки: ${originInput.value || "не вказано"}; куди: ${destinationInput.value || "не вказано"}.`;
+    });
+
+    const closeMenu = () => {
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.setAttribute("aria-label", "Відкрити меню");
+      primaryNavigation.classList.remove("flex");
+      primaryNavigation.classList.add("hidden");
+    };
+
+    menuButton.addEventListener("click", () => {
+      const isExpanded = menuButton.getAttribute("aria-expanded") === "true";
+      menuButton.setAttribute("aria-expanded", String(!isExpanded));
+      menuButton.setAttribute("aria-label", isExpanded ? "Відкрити меню" : "Закрити меню");
+      primaryNavigation.classList.toggle("hidden", isExpanded);
+      primaryNavigation.classList.toggle("flex", !isExpanded);
+    });
+
+    primaryNavigation.addEventListener("click", (event) => {
+      if (event.target.closest("a")) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menuButton.getAttribute("aria-expanded") === "true") {
+        closeMenu();
+        menuButton.focus();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (window.matchMedia("(min-width: 1266px)").matches) {
+        closeMenu();
+      }
+    });
+  </script>
+</body>
+</html>
