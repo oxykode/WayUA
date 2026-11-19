@@ -115,6 +115,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return !errorMessage;
   }
 
+  // Очищає форму та візуальні стани після успішної перевірки.
+  function resetFormAfterValidation() {
+    form.reset();
+    messageCounter.textContent = `0 / ${fields.message.maxLength}`;
+
+    textFieldNames.forEach((fieldName) => {
+      const field = fields[fieldName];
+      field.classList.remove("border-danger", "border-success");
+      field.classList.add("border-muted");
+      field.removeAttribute("aria-invalid");
+      errors[fieldName].textContent = "";
+      errors[fieldName].classList.add("hidden");
+    });
+
+    fields.consent.classList.remove("ring-2", "ring-danger");
+    fields.consent.removeAttribute("aria-invalid");
+    errors.consent.textContent = "";
+    errors.consent.classList.add("hidden");
+  }
+
   // Не показує помилки до взаємодії; після першого вводу оновлює стан одразу.
   textFieldNames.forEach((fieldName) => {
     const field = fields[fieldName];
@@ -164,6 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    resetFormAfterValidation();
     validationModal.showModal();
     validationModalClose.focus();
   });
