@@ -37,6 +37,17 @@
   });
 
   const NBSP = String.fromCharCode(0xa0); // нерозривний пробіл між числом і одиницею
+  // Класи стану поля: звичайний / помилка (включно зі станом фокуса, щоб червона рамка не ховалась під синьою).
+  const INPUT_STATE_CLASSES = Object.freeze({
+    normal: ["border-muted", "focus:border-brand-secondary", "focus:ring-brand-tint"],
+    error: ["border-danger", "focus:border-danger", "focus:ring-danger/20"]
+  });
+
+  const FRAME_STATE_CLASSES = Object.freeze({
+    normal: ["border-muted", "focus-within:border-brand-secondary", "focus-within:ring-brand-tint"],
+    error: ["border-danger", "focus-within:border-danger", "focus-within:ring-danger/20"]
+  });
+
   const CITY_PATTERN = /^\p{L}[\p{L}\s'’.-]*$/u;
 
   const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
@@ -242,10 +253,11 @@
     function renderFieldError(field, message) {
       const visible = Boolean(message) && touched.has(field.input);
       const target = field.frame || field.input;
+      const states = field.frame ? FRAME_STATE_CLASSES : INPUT_STATE_CLASSES;
 
       field.input.setAttribute("aria-invalid", String(visible));
-      target.classList.toggle("border-danger", visible);
-      target.classList.toggle("border-muted", !visible);
+      target.classList.remove(...(visible ? states.normal : states.error));
+      target.classList.add(...(visible ? states.error : states.normal));
       field.error.textContent = visible ? message : "";
       field.error.classList.toggle("hidden", !visible);
 
@@ -255,6 +267,11 @@
     function selectedText(select) {
       const option = select.options[select.selectedIndex];
       return option ? option.text.replace(/\s*\(.*\)$/, "") : "";
+    }
+
+    // «Потяг УЗ» → «потяг УЗ»: змінюємо лише першу літеру, абревіатури лишаються.
+    function lowerFirst(text) {
+      return text ? text.charAt(0).toLocaleLowerCase("uk-UA") + text.slice(1) : "";
     }
 
     function renderEmpty(hasVisibleErrors) {
@@ -333,7 +350,7 @@
         itemOutputs[key].textContent = formatPrice(result.items[key]);
       });
       ui.explanation.textContent =
-        `${ui.origin.value.trim()} — ${ui.destination.value.trim()}: ${selectedText(ui.transport).toLowerCase()} ` +
+        `${ui.origin.value.trim()} — ${ui.destination.value.trim()}: ${lowerFirst(selectedText(ui.transport))} ` +
         `через пункт «${selectedText(ui.border)}», ${formatTransfers(transfers)}. ` +
         "Ціни орієнтовні, на основі демонстраційних тарифів.";
 
