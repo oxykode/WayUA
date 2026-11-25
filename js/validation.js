@@ -141,6 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     field.addEventListener("input", () => {
       validateField(fieldName);
+
+      if (fieldName === "message") {
+        messageCounter.textContent = `${field.value.length} / ${field.maxLength}`;
+      }
     });
 
     field.addEventListener("blur", () => {
@@ -154,10 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   fields.consent.addEventListener("blur", () => {
     validateField("consent");
-  });
-
-  fields.message.addEventListener("input", () => {
-    messageCounter.textContent = `${fields.message.value.length} / 1000`;
   });
 
   validationModalClose.addEventListener("click", () => {

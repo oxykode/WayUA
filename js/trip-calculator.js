@@ -359,9 +359,13 @@
 
     form.addEventListener("input", update);
 
+    // Значення вже перераховане подією input; change лише позначає поле «торкнутим»,
+    // тому перераховуємо повторно тільки коли це сталося вперше (щоб показати помилку).
     form.addEventListener("change", (event) => {
-      touched.add(event.target);
-      update();
+      if (!touched.has(event.target)) {
+        touched.add(event.target);
+        update();
+      }
     });
 
     form.addEventListener("focusout", (event) => {
