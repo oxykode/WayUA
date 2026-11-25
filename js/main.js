@@ -73,7 +73,9 @@
   /* ---------- Галерея: Swiper ---------- */
   const galleryElement = document.querySelector(".gallery-swiper");
 
-  if (galleryElement && typeof window.Swiper === "function") {
+  // Swiper ініціалізується, лише коли галерея наближається до екрана:
+  // його розрахунок розмітки не займає головний потік під час завантаження сторінки.
+  const initGallery = () => {
     const gallerySwiper = new window.Swiper(galleryElement, {
       loop: true,
       speed: reduceMotion ? 0 : 700,
@@ -157,6 +159,20 @@
 
     renderAutoplayToggle();
     syncAutoplay();
+  };
+
+  if (galleryElement && typeof window.Swiper === "function") {
+    if ("IntersectionObserver" in window) {
+      const lazyObserver = new IntersectionObserver((entries, observer) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          initGallery();
+        }
+      }, { rootMargin: "400px 0px" });
+      lazyObserver.observe(galleryElement);
+    } else {
+      initGallery();
+    }
   }
 
   /* ---------- Галерея: Fancybox ---------- */

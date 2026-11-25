@@ -39,12 +39,12 @@
   const NBSP = String.fromCharCode(0xa0); // нерозривний пробіл між числом і одиницею
   // Класи стану поля: звичайний / помилка (включно зі станом фокуса, щоб червона рамка не ховалась під синьою).
   const INPUT_STATE_CLASSES = Object.freeze({
-    normal: ["border-muted", "focus:border-brand-secondary", "focus:ring-brand-tint"],
+    normal: ["border-field", "focus:border-brand-secondary", "focus:ring-brand-tint"],
     error: ["border-danger", "focus:border-danger", "focus:ring-danger/20"]
   });
 
   const FRAME_STATE_CLASSES = Object.freeze({
-    normal: ["border-muted", "focus-within:border-brand-secondary", "focus-within:ring-brand-tint"],
+    normal: ["border-field", "focus-within:border-brand-secondary", "focus-within:ring-brand-tint"],
     error: ["border-danger", "focus-within:border-danger", "focus-within:ring-danger/20"]
   });
 

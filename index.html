@@ -98,18 +98,18 @@
         <form class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_minmax(140px,0.7fr)_auto]" action="#routes" method="get">
           <div class="min-w-0 col-span-2 col-start-1 row-start-1 md:col-span-1">
             <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="origin">Звідки</label>
-            <input class="block min-h-12 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="origin" name="origin" type="text" placeholder="Київ, Україна" autocomplete="address-level2" required>
+            <input class="block min-h-12 w-full rounded-control border border-field bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="origin" name="origin" type="text" placeholder="Київ, Україна" autocomplete="address-level2" required>
           </div>
           <button class="col-start-2 row-start-1 mb-px hidden h-12 w-12 items-center justify-center justify-self-center rounded-full border border-muted bg-page text-brand-secondary transition-colors duration-180 hover:border-brand-secondary hover:bg-muted focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary md:inline-flex" type="button" aria-label="Поміняти місцями міста" aria-controls="origin destination" id="swap-cities">
             <span aria-hidden="true">↔</span>
           </button>
           <div class="min-w-0 col-span-2 col-start-1 row-start-3 md:col-span-1 md:col-start-3 md:row-start-1">
             <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="destination">Куди</label>
-            <input class="block min-h-12 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon2.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="destination" name="destination" type="text" placeholder="Рим, Італія" autocomplete="address-level2" required>
+            <input class="block min-h-12 w-full rounded-control border border-field bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon2.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="destination" name="destination" type="text" placeholder="Рим, Італія" autocomplete="address-level2" required>
           </div>
           <div class="min-w-0 col-span-2 row-start-4 md:col-span-3 md:col-start-1 md:row-start-2 lg:col-span-1 lg:col-start-4 lg:row-start-1">
             <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="departure-date">Дата виїзду</label>
-            <input class="block min-h-12 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon3.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="departure-date" name="departure-date" type="date">
+            <input class="block min-h-12 w-full rounded-control border border-field bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon3.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="departure-date" name="departure-date" type="date">
           </div>
           <label class="col-span-2 row-start-5 flex items-center gap-2 border-t border-muted pt-3 text-body-sm text-brand-primary md:col-span-3 md:row-start-3 lg:col-span-5 lg:row-start-2">
             <input class="h-4 w-4 accent-success focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary" type="checkbox" id="buffer" name="buffer" value="1" checked>
@@ -154,19 +154,19 @@
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-origin">Місто виїзду <span class="text-danger" aria-hidden="true">*</span></label>
-                <input class="block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-origin" name="trip-origin" type="text" autocomplete="address-level2" placeholder="Наприклад, Київ" minlength="2" maxlength="40" required aria-describedby="trip-origin-error">
+                <input class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-origin" name="trip-origin" type="text" autocomplete="address-level2" placeholder="Наприклад, Київ" minlength="2" maxlength="40" required aria-describedby="trip-origin-error">
                 <p class="mt-1 hidden text-body-xs text-danger" id="trip-origin-error" role="alert"></p>
               </div>
 
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-destination">Місто призначення <span class="text-danger" aria-hidden="true">*</span></label>
-                <input class="block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-destination" name="trip-destination" type="text" autocomplete="address-level2" placeholder="Наприклад, Рим" minlength="2" maxlength="40" required aria-describedby="trip-destination-error">
+                <input class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-destination" name="trip-destination" type="text" autocomplete="address-level2" placeholder="Наприклад, Рим" minlength="2" maxlength="40" required aria-describedby="trip-destination-error">
                 <p class="mt-1 hidden text-body-xs text-danger" id="trip-destination-error" role="alert"></p>
               </div>
 
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-border-point">Пункт перетину <span class="text-danger" aria-hidden="true">*</span></label>
-                <select class="block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-border-point" name="border-point" required aria-describedby="trip-border-point-error">
+                <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-border-point" name="border-point" required aria-describedby="trip-border-point-error">
                   <option value="">Оберіть пункт</option>
                   <option value="shehyni-medika">Шегині — Медика (+650 грн)</option>
                   <option value="krakovets-korczowa">Краківець — Корчова (+900 грн)</option>
@@ -178,7 +178,7 @@
 
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-transport">Транспорт до кордону <span class="text-danger" aria-hidden="true">*</span></label>
-                <select class="block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-transport" name="transport" required aria-describedby="trip-transport-error">
+                <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-transport" name="transport" required aria-describedby="trip-transport-error">
                   <option value="">Оберіть транспорт</option>
                   <option value="train">Потяг УЗ (+900 грн)</option>
                   <option value="bus">Міжміський автобус (+650 грн)</option>
@@ -208,7 +208,7 @@
 
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-buffer">Час очікування в хабі <span class="text-danger" aria-hidden="true">*</span></label>
-                <div class="flex min-h-12 items-center rounded-control border border-muted bg-page px-3 transition duration-180 focus-within:border-brand-secondary focus-within:ring-2 focus-within:ring-brand-tint" id="trip-buffer-frame">
+                <div class="flex min-h-12 items-center rounded-control border border-field bg-page px-3 transition duration-180 focus-within:border-brand-secondary focus-within:ring-2 focus-within:ring-brand-tint" id="trip-buffer-frame">
                   <input class="min-w-0 flex-1 border-0 bg-transparent py-2 pr-2 text-body text-copy-primary outline-none" id="trip-buffer" name="waiting-hours" type="number" min="1" max="24" step="0.5" value="4" inputmode="decimal" required aria-describedby="trip-buffer-hint trip-buffer-error">
                   <span class="shrink-0 text-body-sm text-copy-secondary">год</span>
                 </div>
@@ -489,8 +489,8 @@
             </div>
           </div>
           <div class="swiper-pagination"></div>
-          <div class="swiper-button-prev" aria-label="Попередній слайд"></div>
-          <div class="swiper-button-next" aria-label="Наступний слайд"></div>
+          <button class="swiper-button-prev" type="button" aria-label="Попередній слайд"></button>
+          <button class="swiper-button-next" type="button" aria-label="Наступний слайд"></button>
         </div>
       </div>
     </section>
@@ -506,19 +506,19 @@
         <form class="grid grid-cols-1 gap-4 md:grid-cols-2" id="contact-form" novalidate>
           <div class="min-w-0">
             <label class="mb-2 block text-body-xs font-semibold text-copy-secondary" for="contact-name">Ім’я <span class="text-danger" aria-hidden="true">*</span></label>
-            <input class="contact-control block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-name" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" placeholder="Олена" required aria-describedby="contact-name-error">
+            <input class="contact-control block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-name" name="name" type="text" minlength="2" maxlength="60" autocomplete="name" placeholder="Олена" required aria-describedby="contact-name-error">
             <p class="mt-1 hidden text-body-xs text-danger" id="contact-name-error" role="alert"></p>
           </div>
 
           <div class="min-w-0">
             <label class="mb-2 block text-body-xs font-semibold text-copy-secondary" for="contact-email">Електронна пошта <span class="text-danger" aria-hidden="true">*</span></label>
-            <input class="contact-control block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-email" name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="example@gmail.com" required aria-describedby="contact-email-error">
+            <input class="contact-control block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-email" name="email" type="email" maxlength="254" autocomplete="email" inputmode="email" placeholder="example@gmail.com" required aria-describedby="contact-email-error">
             <p class="mt-1 hidden text-body-xs text-danger" id="contact-email-error" role="alert"></p>
           </div>
 
           <div class="min-w-0 md:col-span-2">
             <label class="mb-2 block text-body-xs font-semibold text-copy-secondary" for="contact-phone">Номер телефону <span class="text-danger" aria-hidden="true">*</span></label>
-            <input class="contact-control block min-h-12 w-full rounded-control border border-muted bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-phone" name="phone" type="tel" maxlength="13" autocomplete="tel" inputmode="tel" placeholder="+380XXXXXXXXX" required aria-describedby="contact-phone-hint contact-phone-error">
+            <input class="contact-control block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-phone" name="phone" type="tel" maxlength="13" autocomplete="tel" inputmode="tel" placeholder="+380XXXXXXXXX" required aria-describedby="contact-phone-hint contact-phone-error">
             <p class="mt-1 text-body-xs text-copy-secondary" id="contact-phone-hint">Формат: +380 і рівно 9 цифр без пробілів.</p>
             <p class="mt-1 hidden text-body-xs text-danger" id="contact-phone-error" role="alert"></p>
           </div>
@@ -528,7 +528,7 @@
               <label class="text-body-xs font-semibold text-copy-secondary" for="contact-message">Повідомлення <span class="text-danger" aria-hidden="true">*</span></label>
               <span class="text-caption text-copy-secondary" id="message-counter" aria-live="polite">0 / 1000</span>
             </div>
-            <textarea class="contact-control block min-h-[120px] w-full resize-y rounded-control border border-muted bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-message" name="message" minlength="10" maxlength="1000" placeholder="Опишіть ваше питання" required aria-describedby="contact-message-error message-counter"></textarea>
+            <textarea class="contact-control block min-h-[120px] w-full resize-y rounded-control border border-field bg-page px-3 py-2 text-base text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint md:text-body" id="contact-message" name="message" minlength="10" maxlength="1000" placeholder="Опишіть ваше питання" required aria-describedby="contact-message-error message-counter"></textarea>
             <p class="mt-1 hidden text-body-xs text-danger" id="contact-message-error" role="alert"></p>
           </div>
 

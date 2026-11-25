@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       field.classList.toggle("ring-2", Boolean(errorMessage));
       field.classList.toggle("ring-danger", Boolean(errorMessage));
     } else {
-      field.classList.remove("border-danger", "border-success", "border-muted");
+      field.classList.remove("border-danger", "border-success", "border-field");
       field.classList.add(errorMessage ? "border-danger" : "border-success");
     }
 
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     textFieldNames.forEach((fieldName) => {
       const field = fields[fieldName];
       field.classList.remove("border-danger", "border-success");
-      field.classList.add("border-muted");
+      field.classList.add("border-field");
       field.removeAttribute("aria-invalid");
       errors[fieldName].textContent = "";
       errors[fieldName].classList.add("hidden");
