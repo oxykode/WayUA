@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/tailwind.css">
   <style>
     .wayua-gallery .swiper {
       padding: 4px 4px 48px;
@@ -44,81 +44,6 @@
       font-weight: 800;
     }
   </style>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            copy: {
-              primary: "#0F172A",
-              secondary: "#515F78"
-            },
-            brand: {
-              primary: "#0A192F",
-              secondary: "#1E3A8A",
-              accent: "#00F0FF",
-              "accent-hover": "#00D4E0",
-              "accent-active": "#00BFCB",
-              tint: "rgba(0, 240, 255, 0.1)"
-            },
-            page: "#F2F3FF",
-            muted: "#E2E7FF",
-            footer: "#050E1A",
-            success: "#10B981",
-            "success-ink": "#047857",
-            danger: "#DC2626",
-            "muted-inverse": "#94A3B8",
-            overlay: "rgba(255, 255, 255, 0.1)"
-          },
-          fontFamily: {
-            sans: ["Inter", "system-ui", "sans-serif"],
-            brand: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"]
-          },
-          fontSize: {
-            caption: "10px",
-            "body-xs": "12px",
-            "body-sm": "13px",
-            body: "14px",
-            "body-lg": "18px",
-            "heading-sm": "24px",
-            "heading-md": "32px",
-            hero: "clamp(2rem, 3.8vw, 3rem)",
-            "section-mobile": "clamp(24px, 7vw, 28px)"
-          },
-          borderRadius: {
-            control: "6px",
-            panel: "20px"
-          },
-          lineHeight: {
-            body: "1.5",
-            heading: "1.2"
-          },
-          boxShadow: {
-            card: "0 2px 4px rgba(15, 23, 42, 0.03)",
-            hero: "0 20px 40px rgba(0, 0, 0, 0.2)"
-          },
-          transitionDuration: {
-            180: "180ms"
-          },
-          spacing: {
-            "field-icon": "38px"
-          },
-          width: {
-            "menu-icon": "18px"
-          },
-          minHeight: {
-            timeline: "68px"
-          },
-          maxWidth: {
-            "hero-copy": "660px",
-            "section-intro": "380px",
-            "cta-copy": "620px",
-            "footer-copy": "300px"
-          }
-        }
-      }
-    };
-  </script>
 </head>
 <body class="bg-page font-sans text-body leading-body text-copy-primary">
   <a class="fixed left-2 top-2 z-[1000] -translate-y-[200%] rounded-control bg-white px-3 py-2 text-copy-primary focus:translate-y-0 focus:outline focus:outline-[3px] focus:outline-slate-900 focus:outline-offset-2 focus:shadow-[0_0_0_5px_#FFFFFF]" href="#home">Перейти до основного вмісту</a>
@@ -184,18 +109,18 @@
         <form class="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_minmax(140px,0.7fr)_auto]" action="#routes" method="get">
           <div class="min-w-0 col-span-2 col-start-1 row-start-1 md:col-span-1">
             <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="origin">Звідки</label>
-            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('./assets/icons/Icon.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="origin" name="origin" type="text" placeholder="Київ, Україна" autocomplete="address-level2" required>
+            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="origin" name="origin" type="text" placeholder="Київ, Україна" autocomplete="address-level2" required>
           </div>
           <button class="col-start-2 row-start-1 mb-px hidden h-11 w-11 items-center justify-center justify-self-center rounded-full border border-muted bg-page text-brand-secondary transition-colors duration-180 hover:border-brand-secondary hover:bg-muted focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary md:inline-flex" type="button" aria-label="Поміняти місцями міста" aria-controls="origin destination" id="swap-cities">
             <span aria-hidden="true">↔</span>
           </button>
           <div class="min-w-0 col-span-2 col-start-1 row-start-3 md:col-span-1 md:col-start-3 md:row-start-1">
             <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="destination">Куди</label>
-            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('./assets/icons/Icon2.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="destination" name="destination" type="text" placeholder="Рим, Італія" autocomplete="address-level2" required>
+            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition placeholder:text-copy-secondary focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon2.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="destination" name="destination" type="text" placeholder="Рим, Італія" autocomplete="address-level2" required>
           </div>
           <div class="min-w-0 col-span-2 row-start-4 md:col-span-3 md:col-start-1 md:row-start-2 lg:col-span-1 lg:col-start-4 lg:row-start-1">
             <label class="mb-2 block text-body-xs uppercase tracking-[0.04em] text-copy-secondary" for="departure-date">Дата виїзду</label>
-            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('./assets/icons/Icon3.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="departure-date" name="departure-date" type="date">
+            <input class="block min-h-11 w-full rounded-control border border-muted bg-page py-2 pl-field-icon pr-3 text-body-sm text-copy-primary transition focus-visible:border-brand-secondary focus-visible:outline-none focus-visible:ring focus-visible:ring-brand-tint [background-image:url('../assets/icons/Icon3.svg')] [background-repeat:no-repeat] [background-position:12px_center] [background-size:16px_16px]" id="departure-date" name="departure-date" type="date">
           </div>
           <label class="col-span-2 row-start-5 flex items-center gap-2 border-t border-muted pt-3 text-body-sm text-brand-primary md:col-span-3 md:row-start-3 lg:col-span-5 lg:row-start-2">
             <input class="h-4 w-4 accent-success focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary" type="checkbox" id="buffer" name="buffer" value="1" checked>

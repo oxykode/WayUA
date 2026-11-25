@@ -1,0 +1,12 @@
+{
+  "name": "wayua",
+  "private": true,
+  "description": "WayUA — лендинг мультимодальних поїздок до Європи",
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/tailwind.css -o ./css/tailwind.css --minify",
+    "watch:css": "tailwindcss -i ./src/tailwind.css -o ./css/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}

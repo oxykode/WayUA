@@ -1,0 +1,6 @@
+/* Вхідний файл Tailwind. Збірка: npm run build:css → css/tailwind.css
+   Увага: шляхи url(...) у класах з index.html (напр. [background-image:url('../assets/...')])
+   рахуються від css/tailwind.css, а не від сторінки, тому починаються з ../ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

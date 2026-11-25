@@ -33,7 +33,7 @@
 ## Технології
 
 - HTML5 із семантичною розміткою;
-- Tailwind CSS через CDN, з inline-конфігурацією кольорів і дизайн-токенів;
+- Tailwind CSS 3.4.17, зібраний через Tailwind CLI у `css/tailwind.css` (дизайн-токени — у `tailwind.config.js`);
 - Vanilla JavaScript для обміну містами та керування навігаційним меню;
 - Swiper.js через CDN для адаптивного слайдера;
 - Fancybox через CDN для галереї зображень;
@@ -41,13 +41,19 @@
 - Google Fonts: Inter і Plus Jakarta Sans;
 - SVG-ілюстрації та іконки.
 
-Збірка та встановлення npm-залежностей не потрібні. Для навчального прототипу Tailwind CDN спрощує запуск; для production варто налаштувати Tailwind через збірку.
+Готовий `css/tailwind.css` зберігається в репозиторії, тому для перегляду сайту збирати нічого не потрібно. Після зміни класів у `index.html` або `js/*.js` CSS треба перезібрати:
+
+```bash
+npm install          # один раз: встановлює Tailwind CLI
+npm run build:css    # src/tailwind.css → css/tailwind.css (мініфікований)
+npm run watch:css    # автоматична перезбірка під час розробки
+```
 
 ## Запуск проєкту
 
 1. Завантажте або клонуйте репозиторій.
 2. Відкрийте `index.html` у браузері або запустіть його через розширення на кшталт **Live Server** у VS Code.
-3. Для завантаження Tailwind CSS і Google Fonts потрібне підключення до інтернету.
+3. Для завантаження Google Fonts і бібліотек (Swiper, Fancybox, AOS) потрібне підключення до інтернету.
 
 ## Структура
 
@@ -57,8 +63,13 @@
 │   ├── icons/       # Логотип та SVG-іконки
 │   └── image/       # Ілюстрації сторінки
 ├── css/
+│   ├── tailwind.css # Зібраний Tailwind (генерується, не редагувати вручну)
 │   └── style.css    # Попередня таблиця стилів; сторінка її не підключає
-├── index.html       # Розмітка, Tailwind-конфігурація та JavaScript
+├── src/
+│   └── tailwind.css # Вхідний файл для Tailwind CLI
+├── index.html       # Розмітка та JavaScript
+├── tailwind.config.js # Дизайн-токени Tailwind і шляхи для пошуку класів
+├── package.json     # Скрипти build:css / watch:css
 ├── style_old.css    # Початкові стилі, збережені як довідкове джерело
 └── PROMPT_LOG.md    # Журнал запитів і виконаних змін
 ```
