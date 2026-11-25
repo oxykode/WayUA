@@ -1,0 +1,76 @@
+name: CI/CD Production Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Перевірка коду
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Встановити залежності
+        run: npm ci
+
+      - name: Зібрати Tailwind CSS
+        run: npm run build:css
+
+      - name: css/tailwind.css відповідає джерелам
+        run: |
+          if ! git diff --quiet -- css/tailwind.css; then
+            echo "::error::css/tailwind.css застарів. Виконайте npm run build:css і закомітьте результат."
+            git diff --stat -- css/tailwind.css
+            exit 1
+          fi
+
+      - name: Синтаксис JavaScript
+        run: for f in js/*.js; do node --check "$f"; done
+
+      - name: Валідність vercel.json
+        run: node -e "JSON.parse(require('fs').readFileSync('vercel.json', 'utf8'))"
+
+  deploy:
+    name: Деплой на Vercel (production)
+    needs: check
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Перевірити секрети
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          for name in VERCEL_TOKEN VERCEL_ORG_ID VERCEL_PROJECT_ID; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Секрет $name не задано (Settings → Secrets and variables → Actions)."
+              exit 1
+            fi
+          done
+
+      - name: Встановити Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Отримати налаштування проєкту Vercel
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Деплой
+        run: vercel deploy --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
