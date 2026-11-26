@@ -142,9 +142,9 @@
         <div class="mb-6 grid grid-cols-1 items-end gap-3 md:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.8fr)] md:gap-8">
           <div>
             <p class="text-body-xs font-semibold uppercase tracking-[0.08em] text-brand-secondary">Калькулятор вартості поїздки</p>
-            <h2 class="mt-2 mb-0 text-section-mobile font-bold md:text-heading-md" id="trip-cost-title">Розрахуйте вартість дороги до кордону</h2>
+            <h2 class="mt-2 mb-0 text-section-mobile font-bold md:text-heading-md" id="trip-cost-title">Скільки коштує дорога до Європи</h2>
           </div>
-          <p class="mb-1 max-w-section-intro justify-self-start text-body text-copy-secondary md:justify-self-end">Вкажіть параметри маршруту — кошторис перерахується одразу, без перезавантаження сторінки.</p>
+          <p class="mb-1 max-w-section-intro justify-self-start text-body text-copy-secondary md:justify-self-end">Оберіть міста й транспорт — відстань, час у дорозі та вартість перерахуються одразу.</p>
         </div>
 
         <div class="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)]">
@@ -152,85 +152,74 @@
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-origin">Місто виїзду <span class="text-danger" aria-hidden="true">*</span></label>
-                <input class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-origin" name="trip-origin" type="text" autocomplete="address-level2" placeholder="Наприклад, Київ" minlength="2" maxlength="40" required aria-describedby="trip-origin-error">
+                <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-origin" name="origin" required aria-describedby="trip-origin-error">
+                  <option value="">Оберіть місто</option>
+                  <option value="kyiv">Київ</option>
+                  <option value="lviv">Львів</option>
+                  <option value="kharkiv">Харків</option>
+                  <option value="odesa">Одеса</option>
+                  <option value="dnipro">Дніпро</option>
+                  <option value="vinnytsia">Вінниця</option>
+                  <option value="uzhhorod">Ужгород</option>
+                </select>
                 <p class="mt-1 hidden text-body-xs text-danger" id="trip-origin-error" role="alert"></p>
               </div>
 
               <div class="min-w-0">
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-destination">Місто призначення <span class="text-danger" aria-hidden="true">*</span></label>
-                <input class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 placeholder:text-copy-secondary focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-destination" name="trip-destination" type="text" autocomplete="address-level2" placeholder="Наприклад, Рим" minlength="2" maxlength="40" required aria-describedby="trip-destination-error">
+                <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-destination" name="destination" required aria-describedby="trip-destination-error">
+                  <option value="">Оберіть місто</option>
+                  <option value="krakow">Краків</option>
+                  <option value="warsaw">Варшава</option>
+                  <option value="budapest">Будапешт</option>
+                  <option value="vienna">Відень</option>
+                  <option value="prague">Прага</option>
+                  <option value="berlin">Берлін</option>
+                  <option value="rome">Рим</option>
+                  <option value="paris">Париж</option>
+                </select>
                 <p class="mt-1 hidden text-body-xs text-danger" id="trip-destination-error" role="alert"></p>
               </div>
 
-              <div class="min-w-0">
-                <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-border-point">Пункт перетину <span class="text-danger" aria-hidden="true">*</span></label>
-                <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-border-point" name="border-point" required aria-describedby="trip-border-point-error">
-                  <option value="">Оберіть пункт</option>
-                  <option value="shehyni-medika">Шегині — Медика (+650 грн)</option>
-                  <option value="krakovets-korczowa">Краківець — Корчова (+900 грн)</option>
-                  <option value="chop-zahony">Чоп — Захонь (+500 грн)</option>
-                  <option value="yahodyn-dorohusk">Ягодин — Дорогуськ (+1 100 грн)</option>
-                </select>
-                <p class="mt-1 hidden text-body-xs text-danger" id="trip-border-point-error" role="alert"></p>
-              </div>
-
-              <div class="min-w-0">
-                <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-transport">Транспорт до кордону <span class="text-danger" aria-hidden="true">*</span></label>
-                <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-transport" name="transport" required aria-describedby="trip-transport-error">
-                  <option value="">Оберіть транспорт</option>
-                  <option value="train">Потяг УЗ (+900 грн)</option>
-                  <option value="bus">Міжміський автобус (+650 грн)</option>
-                  <option value="transfer">Комфортний трансфер (+1 800 грн)</option>
-                  <option value="car">Особистий автомобіль (+1 200 грн)</option>
-                </select>
-                <p class="mt-1 hidden text-body-xs text-danger" id="trip-transport-error" role="alert"></p>
-              </div>
-
-              <fieldset class="sm:col-span-2" id="trip-border-load-group">
-                <legend class="mb-2 text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary">Очікуване навантаження на кордоні</legend>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-3" id="trip-border-load-options">
-                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-load-low">
-                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-load-low" name="border-load" type="radio" value="low">
-                    <span class="grid leading-tight"><span>Низьке</span><span class="text-caption text-copy-secondary">+0 грн</span></span>
+              <fieldset class="sm:col-span-2" id="trip-transport-group" aria-describedby="trip-transport-hint">
+                <legend class="mb-2 text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary">Транспорт</legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-bus">
+                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-bus" name="mode" type="radio" value="bus" checked>
+                    <span class="grid leading-tight"><span>Автобус</span><span class="text-caption text-copy-secondary">1,6 грн/км · ~60 км/год</span></span>
                   </label>
-                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-load-medium">
-                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-load-medium" name="border-load" type="radio" value="medium" checked>
-                    <span class="grid leading-tight"><span>Середнє</span><span class="text-caption text-copy-secondary">+250 грн</span></span>
+                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-train">
+                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-train" name="mode" type="radio" value="train">
+                    <span class="grid leading-tight"><span>Потяг</span><span class="text-caption text-copy-secondary">2,0 грн/км · ~70 км/год</span></span>
                   </label>
-                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-load-high">
-                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-load-high" name="border-load" type="radio" value="high">
-                    <span class="grid leading-tight"><span>Високе</span><span class="text-caption text-copy-secondary">+700 грн</span></span>
+                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-car">
+                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-car" name="mode" type="radio" value="car">
+                    <span class="grid leading-tight"><span>Авто</span><span class="text-caption text-copy-secondary">пальне 4,2 грн/км на авто</span></span>
                   </label>
                 </div>
+                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transport-hint">Автобус і потяг — ціна за кожного пасажира; авто — пальне й «Зелена карта» діляться на всіх.</p>
               </fieldset>
 
               <div class="min-w-0">
-                <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-buffer">Час очікування в хабі <span class="text-danger" aria-hidden="true">*</span></label>
-                <div class="flex min-h-12 items-center rounded-control border border-field bg-page px-3 transition duration-180 focus-within:border-brand-secondary focus-within:ring-2 focus-within:ring-brand-tint" id="trip-buffer-frame">
-                  <input class="min-w-0 flex-1 border-0 bg-transparent py-2 pr-2 text-body text-copy-primary outline-none" id="trip-buffer" name="waiting-hours" type="number" min="1" max="24" step="0.5" value="4" inputmode="decimal" required aria-describedby="trip-buffer-hint trip-buffer-error">
-                  <span class="shrink-0 text-body-sm text-copy-secondary">год</span>
+                <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-passengers">Пасажирів <span class="text-danger" aria-hidden="true">*</span></label>
+                <div class="flex min-h-12 items-center rounded-control border border-field bg-page px-3 transition duration-180 focus-within:border-brand-secondary focus-within:ring-2 focus-within:ring-brand-tint" id="trip-passengers-frame">
+                  <input class="min-w-0 flex-1 border-0 bg-transparent py-2 pr-2 text-body text-copy-primary outline-none" id="trip-passengers" name="passengers" type="number" min="1" max="8" step="1" value="1" inputmode="numeric" required aria-describedby="trip-passengers-hint trip-passengers-error">
+                  <span class="shrink-0 text-body-sm text-copy-secondary">осіб</span>
                 </div>
-                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-buffer-hint">Від 1 до 24 год, крок 0,5. 100 грн/год — харчування, камера схову.</p>
-                <p class="mt-1 hidden text-body-xs text-danger" id="trip-buffer-error" role="alert"></p>
+                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-passengers-hint">Від 1 до 8; в авто — до 5.</p>
+                <p class="mt-1 hidden text-body-xs text-danger" id="trip-passengers-error" role="alert"></p>
               </div>
 
-              <div class="min-w-0">
-                <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-transfers">Кількість пересадок</label>
-                <input class="block h-12 w-full accent-brand-secondary" id="trip-transfers" name="transfers" type="range" min="1" max="4" step="1" value="2" aria-describedby="trip-transfers-value trip-transfers-hint">
-                <output class="mt-1 block text-body-sm font-semibold text-brand-secondary" id="trip-transfers-value" for="trip-transfers">2 пересадки</output>
-                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transfers-hint">+450 грн за кожну пересадку після першої.</p>
-              </div>
-
-              <fieldset class="sm:col-span-2" id="trip-ticket-options">
-                <legend class="mb-2 text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary">Додаткові опції</legend>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <label class="flex min-h-12 cursor-pointer items-start gap-3 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-transfer-protection">
-                    <input class="mt-0.5 h-4 w-4 shrink-0 accent-brand-secondary" id="trip-transfer-protection" name="transfer-protection" type="checkbox" value="1" checked>
-                    <span>Гарантована заміна пересадки (+600 грн)</span>
+              <fieldset class="min-w-0" id="trip-options">
+                <legend class="mb-2 text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary">Додатково</legend>
+                <div class="grid gap-2">
+                  <label class="flex min-h-12 cursor-pointer items-start gap-3 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-luggage">
+                    <input class="mt-0.5 h-4 w-4 shrink-0 accent-brand-secondary" id="trip-luggage" name="luggage" type="checkbox" value="1">
+                    <span>Великий багаж (+250 грн/особу, для авто безкоштовно)</span>
                   </label>
-                  <label class="flex min-h-12 cursor-pointer items-start gap-3 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-refundable-ticket">
-                    <input class="mt-0.5 h-4 w-4 shrink-0 accent-brand-secondary" id="trip-refundable-ticket" name="refundable-ticket" type="checkbox" value="1">
-                    <span>Квиток можна змінити (+350 грн)</span>
+                  <label class="flex min-h-12 cursor-pointer items-start gap-3 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-round">
+                    <input class="mt-0.5 h-4 w-4 shrink-0 accent-brand-secondary" id="trip-round" name="round-trip" type="checkbox" value="1">
+                    <span>Туди й назад (×2, знижка 10%)</span>
                   </label>
                 </div>
               </fieldset>
@@ -249,9 +238,9 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-              <div class="min-w-0 rounded-xl bg-page p-4" id="trip-buffer-summary-card">
-                <p class="text-caption font-semibold uppercase tracking-[0.04em] text-copy-secondary">Очікування</p>
-                <strong class="mt-1 block whitespace-nowrap text-body-lg sm:text-heading-sm text-copy-primary" id="trip-buffer-summary">—</strong>
+              <div class="min-w-0 rounded-xl bg-page p-4" id="trip-distance-card">
+                <p class="text-caption font-semibold uppercase tracking-[0.04em] text-copy-secondary">Відстань</p>
+                <strong class="mt-1 block whitespace-nowrap text-body-lg text-copy-primary sm:text-heading-sm" id="trip-distance-value">—</strong>
               </div>
               <div class="min-w-0 rounded-xl bg-brand-primary p-4 text-white" id="trip-total-cost-card">
                 <p class="text-caption font-semibold uppercase tracking-[0.04em] text-brand-accent">Разом</p>
@@ -259,29 +248,27 @@
               </div>
             </div>
 
-            <div id="trip-cost-meter">
-              <div class="mb-2 flex items-center justify-between gap-3 text-body-xs">
-                <span class="font-semibold text-copy-secondary" id="trip-cost-meter-label">Ціновий рівень</span>
-                <span class="font-bold text-brand-secondary" id="trip-cost-meter-value">—</span>
+            <dl class="grid grid-cols-2 gap-3 text-body-sm">
+              <div class="rounded-xl border border-muted p-3">
+                <dt class="text-caption font-semibold uppercase tracking-[0.04em] text-copy-secondary">Час у дорозі</dt>
+                <dd class="mt-1 font-bold text-copy-primary" id="trip-duration-value">—</dd>
               </div>
-              <div class="h-2 overflow-hidden rounded-full bg-muted" role="img" aria-label="Ціновий рівень не розраховано" id="trip-cost-meter-track">
-                <div class="h-full w-0 rounded-full bg-brand-secondary" id="trip-cost-meter-bar"></div>
+              <div class="rounded-xl border border-muted p-3">
+                <dt class="text-caption font-semibold uppercase tracking-[0.04em] text-copy-secondary">На 1 особу</dt>
+                <dd class="mt-1 font-bold text-copy-primary" id="trip-per-person-value">—</dd>
               </div>
-            </div>
+            </dl>
 
             <div class="border-t border-muted pt-4" id="trip-cost-breakdown-block">
               <h4 class="mb-2 text-body font-bold" id="trip-cost-breakdown-title">Кошторис</h4>
               <ul class="grid gap-1 text-body-sm text-copy-secondary" id="trip-cost-breakdown" aria-labelledby="trip-cost-breakdown-title">
-                <li class="flex items-baseline justify-between gap-3"><span>Базовий сервісний збір</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-base">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Транспорт до кордону</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-transport">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Пункт перетину</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-border">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Навантаження на кордоні</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-load">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Очікування в хабі</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-waiting">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Додаткові пересадки</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-transfers">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Заміна пересадки</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-protection">—</span></li>
-                <li class="flex items-baseline justify-between gap-3"><span>Змінний квиток</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-refundable">—</span></li>
+                <li class="flex items-baseline justify-between gap-3"><span id="trip-cost-item-fare-label">Квитки</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-fare">—</span></li>
+                <li class="flex items-baseline justify-between gap-3"><span>«Зелена карта» (страховка авто)</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-insurance">—</span></li>
+                <li class="flex items-baseline justify-between gap-3"><span>Великий багаж</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-luggage">—</span></li>
+                <li class="flex items-baseline justify-between gap-3"><span>Сервісний збір (5%, мін. 150 грн)</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-service">—</span></li>
+                <li class="flex items-baseline justify-between gap-3"><span>Знижка «туди й назад»</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-discount">—</span></li>
               </ul>
-              <p class="mt-3 text-body-sm text-copy-secondary" id="trip-cost-explanation-text">Вкажіть міста, пункт перетину й транспорт, щоб побачити кошторис.</p>
+              <p class="mt-3 text-body-sm text-copy-secondary" id="trip-cost-explanation-text">Оберіть міста, щоб побачити кошторис.</p>
             </div>
 
             <a class="inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-brand-accent px-5 py-2 text-center text-body-xs font-bold text-brand-primary transition-colors duration-180 hover:bg-brand-accent-hover active:bg-brand-accent-active focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-secondary" id="trip-cost-route-link" href="#search">Підібрати маршрут</a>

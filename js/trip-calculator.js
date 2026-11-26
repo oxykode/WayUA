@@ -1,43 +1,107 @@
 (function () {
   "use strict";
 
-  // Бізнес-правила калькулятора (грн). Єдине місце, де задаються ціни.
-  const PRICES = Object.freeze({
-    base: 900,
-    border: Object.freeze({
-      "shehyni-medika": 650,
-      "krakovets-korczowa": 900,
-      "chop-zahony": 500,
-      "yahodyn-dorohusk": 1100
-    }),
-    transport: Object.freeze({
-      train: 900,
-      bus: 650,
-      transfer: 1800,
-      car: 1200
-    }),
-    load: Object.freeze({
-      low: 0,
-      medium: 250,
-      high: 700
-    }),
-    waitingPerHour: 100,
-    extraTransfer: 450,
-    protection: 600,
-    refundable: 350
+  // ---------- Бізнес-правила (демонстраційні тарифи, грн) ----------
+
+  // Координати міст [широта, довгота] — відстань рахується за ними, а не вводиться вручну.
+  const CITIES = Object.freeze({
+    kyiv: { name: "Київ", lat: 50.45, lon: 30.52 },
+    lviv: { name: "Львів", lat: 49.84, lon: 24.03 },
+    kharkiv: { name: "Харків", lat: 49.99, lon: 36.23 },
+    odesa: { name: "Одеса", lat: 46.48, lon: 30.72 },
+    dnipro: { name: "Дніпро", lat: 48.46, lon: 35.05 },
+    vinnytsia: { name: "Вінниця", lat: 49.23, lon: 28.47 },
+    uzhhorod: { name: "Ужгород", lat: 48.62, lon: 22.29 },
+    krakow: { name: "Краків", lat: 50.06, lon: 19.94 },
+    warsaw: { name: "Варшава", lat: 52.23, lon: 21.01 },
+    budapest: { name: "Будапешт", lat: 47.5, lon: 19.04 },
+    vienna: { name: "Відень", lat: 48.21, lon: 16.37 },
+    prague: { name: "Прага", lat: 50.08, lon: 14.44 },
+    berlin: { name: "Берлін", lat: 52.52, lon: 13.4 },
+    rome: { name: "Рим", lat: 41.9, lon: 12.5 },
+    paris: { name: "Париж", lat: 48.86, lon: 2.35 }
   });
 
-  const LIMITS = Object.freeze({
-    cityMin: 2,
-    cityMax: 40,
-    bufferMin: 1,
-    bufferMax: 24,
-    transfersMin: 1,
-    transfersMax: 4
+  const ORIGINS = Object.freeze(["kyiv", "lviv", "kharkiv", "odesa", "dnipro", "vinnytsia", "uzhhorod"]);
+  const DESTINATIONS = Object.freeze(["krakow", "warsaw", "budapest", "vienna", "prague", "berlin", "rome", "paris"]);
+
+  // perKm — за пасажира (автобус, потяг) або за авто (пальне); border — середнє очікування на кордоні, год.
+  const MODES = Object.freeze({
+    bus: { name: "автобус", perKm: 1.6, perPassenger: true, speed: 60, border: 4 },
+    train: { name: "потяг", perKm: 2.0, perPassenger: true, speed: 70, border: 2 },
+    car: { name: "авто", perKm: 4.2, perPassenger: false, speed: 75, border: 6, insurance: 1200, maxPassengers: 5 }
+  });
+
+  const RULES = Object.freeze({
+    roadFactor: 1.25, // дороги довші за пряму лінію між містами
+    luggagePerPassenger: 250,
+    serviceRate: 0.05,
+    serviceMin: 150,
+    roundTripDiscount: 0.1,
+    passengersMin: 1,
+    passengersMax: 8
   });
 
   const NBSP = String.fromCharCode(0xa0); // нерозривний пробіл між числом і одиницею
-  // Класи стану поля: звичайний / помилка (включно зі станом фокуса, щоб червона рамка не ховалась під синьою).
+  const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
+  // Відстань по дорогах: формула гаверсинуса × дорожній коефіцієнт, округлення до 10 км.
+  function roadDistanceKm(from, to) {
+    const rad = (deg) => (deg * Math.PI) / 180;
+    const dLat = rad(to.lat - from.lat);
+    const dLon = rad(to.lon - from.lon);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(rad(from.lat)) * Math.cos(rad(to.lat)) * Math.sin(dLon / 2) ** 2;
+    const straight = 2 * 6371 * Math.asin(Math.sqrt(a));
+    return Math.round((straight * RULES.roadFactor) / 10) * 10;
+  }
+
+  // Чиста функція: лише рахує, не торкається DOM.
+  function calculateTrip({ origin, destination, mode, passengers, luggage, roundTrip }) {
+    const transport = MODES[mode];
+    const distance = roadDistanceKm(CITIES[origin], CITIES[destination]);
+    const trips = roundTrip ? 2 : 1;
+
+    const fare = Math.round(distance * transport.perKm * (transport.perPassenger ? passengers : 1)) * trips;
+    const insurance = transport.insurance || 0;
+    const luggageCost = luggage && transport.perPassenger ? RULES.luggagePerPassenger * passengers * trips : 0;
+    const discount = roundTrip ? Math.round((fare + luggageCost) * RULES.roundTripDiscount) : 0;
+    const subtotal = fare + insurance + luggageCost - discount;
+    const service = Math.max(RULES.serviceMin, Math.round(subtotal * RULES.serviceRate));
+    const total = subtotal + service;
+
+    return {
+      distance,
+      hours: distance / transport.speed + transport.border,
+      items: { fare, insurance, luggage: luggageCost, service, discount },
+      total,
+      perPerson: Math.round(total / passengers)
+    };
+  }
+
+  function formatPrice(value) {
+    if (!Number.isFinite(value) || value < 0) {
+      return "—";
+    }
+
+    return `${Math.round(value).toLocaleString("uk-UA")}${NBSP}грн`;
+  }
+
+  function formatDuration(hours) {
+    const total = Math.round(hours * 60);
+    const h = Math.floor(total / 60);
+    const m = total % 60;
+    return m ? `${h}${NBSP}год ${m}${NBSP}хв` : `${h}${NBSP}год`;
+  }
+
+  function formatPassengers(n) {
+    const lastTwo = n % 100;
+    const last = n % 10;
+    if (last === 1 && lastTwo !== 11) return `${n} пасажир`;
+    if (last >= 2 && last <= 4 && (lastTwo < 12 || lastTwo > 14)) return `${n} пасажири`;
+    return `${n} пасажирів`;
+  }
+
+  // Класи стану поля: звичайний / помилка (включно зі станом фокуса).
   const INPUT_STATE_CLASSES = Object.freeze({
     normal: ["border-field", "focus:border-brand-secondary", "focus:ring-brand-tint"],
     error: ["border-danger", "focus:border-danger", "focus:ring-danger/20"]
@@ -48,130 +112,29 @@
     error: ["border-danger", "focus-within:border-danger", "focus-within:ring-danger/20"]
   });
 
-  const CITY_PATTERN = /^\p{L}[\p{L}\s'’.-]*$/u;
-
-  const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
-  const minOf = (map) => Math.min(...Object.values(map));
-  const maxOf = (map) => Math.max(...Object.values(map));
-
-  // Чиста функція: лише рахує, не торкається DOM.
-  function calculateCost(input) {
-    const items = {
-      base: PRICES.base,
-      transport: PRICES.transport[input.transport],
-      border: PRICES.border[input.border],
-      load: PRICES.load[input.load],
-      waiting: input.buffer * PRICES.waitingPerHour,
-      transfers: (input.transfers - 1) * PRICES.extraTransfer,
-      protection: input.protection ? PRICES.protection : 0,
-      refundable: input.refundable ? PRICES.refundable : 0
-    };
-
-    const total = Object.values(items).reduce((sum, value) => sum + value, 0);
-    return { items, total };
+  function validateCity(value, allowed, emptyMessage) {
+    if (!value) return emptyMessage;
+    return allowed.includes(value) && hasOwn(CITIES, value) ? "" : "Оберіть місто зі списку.";
   }
 
-  const PRICE_RANGE = Object.freeze({
-    min: calculateCost({
-      transport: Object.keys(PRICES.transport).find((key) => PRICES.transport[key] === minOf(PRICES.transport)),
-      border: Object.keys(PRICES.border).find((key) => PRICES.border[key] === minOf(PRICES.border)),
-      load: "low",
-      buffer: LIMITS.bufferMin,
-      transfers: LIMITS.transfersMin,
-      protection: false,
-      refundable: false
-    }).total,
-    max: calculateCost({
-      transport: Object.keys(PRICES.transport).find((key) => PRICES.transport[key] === maxOf(PRICES.transport)),
-      border: Object.keys(PRICES.border).find((key) => PRICES.border[key] === maxOf(PRICES.border)),
-      load: "high",
-      buffer: LIMITS.bufferMax,
-      transfers: LIMITS.transfersMax,
-      protection: true,
-      refundable: true
-    }).total
-  });
+  function validatePassengers(input, mode) {
+    const range = `від ${RULES.passengersMin} до ${RULES.passengersMax}`;
 
-  function formatPrice(value) {
-    if (!Number.isFinite(value) || value < 0) {
-      return "—";
-    }
-
-    return `${Math.round(value).toLocaleString("uk-UA")}${NBSP}грн`;
-  }
-
-  function formatHours(value) {
-    return `${value.toLocaleString("uk-UA")}${NBSP}год`;
-  }
-
-  function formatTransfers(value) {
-    return `${value} ${value === 1 ? "пересадка" : "пересадки"}`;
-  }
-
-  function validateCity(value, emptyMessage) {
-    const city = value.trim();
-
-    if (!city) {
-      return emptyMessage;
-    }
-
-    if (city.length < LIMITS.cityMin) {
-      return `Назва міста має містити щонайменше ${LIMITS.cityMin} літери.`;
-    }
-
-    if (city.length > LIMITS.cityMax) {
-      return `Назва міста — не довше ${LIMITS.cityMax} символів.`;
-    }
-
-    if (!CITY_PATTERN.test(city)) {
-      return "Використовуйте лише літери, пробіл, дефіс або апостроф.";
-    }
-
-    return "";
-  }
-
-  function validateOption(value, map, emptyMessage, unknownMessage) {
-    if (!value) {
-      return emptyMessage;
-    }
-
-    return hasOwn(map, value) ? "" : unknownMessage;
-  }
-
-  function validateBuffer(input) {
-    const range = `від ${LIMITS.bufferMin} до ${LIMITS.bufferMax} год`;
-
-    if (input.validity.badInput) {
-      return "Введіть число, наприклад 2,5.";
-    }
+    if (input.validity.badInput) return "Введіть ціле число, наприклад 2.";
 
     const raw = input.value.trim();
+    if (!raw) return `Вкажіть кількість пасажирів ${range}.`;
 
-    if (!raw) {
-      return `Вкажіть час очікування ${range}.`;
-    }
+    const n = Number(raw);
+    if (!Number.isFinite(n) || !Number.isInteger(n)) return "Кількість пасажирів — ціле число.";
+    if (n < RULES.passengersMin || n > RULES.passengersMax) return `Кількість пасажирів має бути ${range}.`;
 
-    const hours = Number(raw);
-
-    if (!Number.isFinite(hours) || hours < LIMITS.bufferMin || hours > LIMITS.bufferMax) {
-      return `Час очікування має бути ${range}.`;
-    }
-
-    if (!Number.isInteger(hours * 2)) {
-      return "Вкажіть значення з кроком 0,5 год (наприклад, 2,5).";
+    const transport = MODES[mode];
+    if (transport && transport.maxPassengers && n > transport.maxPassengers) {
+      return `В авто — не більше ${transport.maxPassengers} пасажирів.`;
     }
 
     return "";
-  }
-
-  function readTransfers(input) {
-    const value = Math.round(Number(input.value));
-
-    if (!Number.isFinite(value)) {
-      return LIMITS.transfersMin;
-    }
-
-    return Math.min(LIMITS.transfersMax, Math.max(LIMITS.transfersMin, value));
   }
 
   function initCalculator(form) {
@@ -180,55 +143,46 @@
     const ui = {
       origin: byId("trip-origin"),
       destination: byId("trip-destination"),
-      border: byId("trip-border-point"),
-      transport: byId("trip-transport"),
-      buffer: byId("trip-buffer"),
-      bufferFrame: byId("trip-buffer-frame"),
-      transfers: byId("trip-transfers"),
-      transfersOutput: byId("trip-transfers-value"),
-      protection: byId("trip-transfer-protection"),
-      refundable: byId("trip-refundable-ticket"),
+      passengers: byId("trip-passengers"),
+      passengersFrame: byId("trip-passengers-frame"),
+      luggage: byId("trip-luggage"),
+      roundTrip: byId("trip-round"),
       status: byId("trip-cost-status"),
-      bufferSummary: byId("trip-buffer-summary"),
+      distance: byId("trip-distance-value"),
       total: byId("trip-total-cost-value"),
-      meterValue: byId("trip-cost-meter-value"),
-      meterTrack: byId("trip-cost-meter-track"),
-      meterBar: byId("trip-cost-meter-bar"),
+      duration: byId("trip-duration-value"),
+      perPerson: byId("trip-per-person-value"),
+      fareLabel: byId("trip-cost-item-fare-label"),
       explanation: byId("trip-cost-explanation-text")
     };
 
-    const itemKeys = ["base", "transport", "border", "load", "waiting", "transfers", "protection", "refundable"];
+    const itemKeys = ["fare", "insurance", "luggage", "service", "discount"];
     const itemOutputs = {};
     itemKeys.forEach((key) => {
       itemOutputs[key] = byId(`trip-cost-item-${key}`);
     });
 
+    const getMode = () => {
+      const selected = form.querySelector('input[name="mode"]:checked');
+      return selected && hasOwn(MODES, selected.value) ? selected.value : "bus";
+    };
+
     const fields = [
       {
         input: ui.origin,
         error: byId("trip-origin-error"),
-        validate: () => validateCity(ui.origin.value, "Вкажіть місто виїзду.")
+        validate: () => validateCity(ui.origin.value, ORIGINS, "Оберіть місто виїзду.")
       },
       {
         input: ui.destination,
         error: byId("trip-destination-error"),
-        validate: () => validateCity(ui.destination.value, "Вкажіть місто призначення.")
+        validate: () => validateCity(ui.destination.value, DESTINATIONS, "Оберіть місто призначення.")
       },
       {
-        input: ui.border,
-        error: byId("trip-border-point-error"),
-        validate: () => validateOption(ui.border.value, PRICES.border, "Оберіть пункт перетину.", "Оберіть пункт перетину зі списку.")
-      },
-      {
-        input: ui.transport,
-        error: byId("trip-transport-error"),
-        validate: () => validateOption(ui.transport.value, PRICES.transport, "Оберіть транспорт.", "Оберіть транспорт зі списку.")
-      },
-      {
-        input: ui.buffer,
-        frame: ui.bufferFrame,
-        error: byId("trip-buffer-error"),
-        validate: () => validateBuffer(ui.buffer)
+        input: ui.passengers,
+        frame: ui.passengersFrame,
+        error: byId("trip-passengers-error"),
+        validate: () => validatePassengers(ui.passengers, getMode())
       }
     ];
 
@@ -245,11 +199,6 @@
 
     const touched = new Set();
 
-    function getSelectedLoad() {
-      const selected = form.querySelector('input[name="border-load"]:checked');
-      return selected && hasOwn(PRICES.load, selected.value) ? selected.value : "medium";
-    }
-
     function renderFieldError(field, message) {
       const visible = Boolean(message) && touched.has(field.input);
       const target = field.frame || field.input;
@@ -264,50 +213,25 @@
       return visible;
     }
 
-    function selectedText(select) {
-      const option = select.options[select.selectedIndex];
-      return option ? option.text.replace(/\s*\(.*\)$/, "") : "";
-    }
-
-    // «Потяг УЗ» → «потяг УЗ»: змінюємо лише першу літеру, абревіатури лишаються.
-    function lowerFirst(text) {
-      return text ? text.charAt(0).toLocaleLowerCase("uk-UA") + text.slice(1) : "";
-    }
-
     function renderEmpty(hasVisibleErrors) {
       ui.status.textContent = hasVisibleErrors ? "Перевірте поля" : "Заповніть параметри";
       ui.status.classList.toggle("text-danger", hasVisibleErrors);
       ui.status.classList.toggle("text-brand-primary", !hasVisibleErrors);
-      ui.bufferSummary.textContent = "—";
-      ui.total.textContent = "—";
-      ui.meterValue.textContent = "—";
-      ui.meterBar.style.width = "0%";
-      ui.meterTrack.setAttribute("aria-label", "Ціновий рівень не розраховано");
-      itemKeys.forEach((key) => {
-        itemOutputs[key].textContent = "—";
-      });
+      [ui.distance, ui.total, ui.duration, ui.perPerson].forEach((el) => { el.textContent = "—"; });
+      itemKeys.forEach((key) => { itemOutputs[key].textContent = "—"; });
       ui.explanation.textContent = hasVisibleErrors
         ? "Виправте позначені поля — вартість з’явиться автоматично."
-        : "Вкажіть міста, пункт перетину й транспорт, щоб побачити кошторис.";
+        : "Оберіть міста, щоб побачити кошторис.";
     }
 
     function update() {
-      const transfers = readTransfers(ui.transfers);
-      ui.transfersOutput.textContent = formatTransfers(transfers);
-
       let firstInvalid = null;
       let hasVisibleErrors = false;
 
       fields.forEach((field) => {
         const message = field.validate();
-
-        if (message && !firstInvalid) {
-          firstInvalid = field.input;
-        }
-
-        if (renderFieldError(field, message)) {
-          hasVisibleErrors = true;
-        }
+        if (message && !firstInvalid) firstInvalid = field.input;
+        if (renderFieldError(field, message)) hasVisibleErrors = true;
       });
 
       if (firstInvalid) {
@@ -315,43 +239,40 @@
         return firstInvalid;
       }
 
-      const buffer = Number(ui.buffer.value);
-      const result = calculateCost({
-        transport: ui.transport.value,
-        border: ui.border.value,
-        load: getSelectedLoad(),
-        buffer,
-        transfers,
-        protection: ui.protection.checked,
-        refundable: ui.refundable.checked
+      const mode = getMode();
+      const passengers = Number(ui.passengers.value);
+      const roundTrip = ui.roundTrip.checked;
+      const result = calculateTrip({
+        origin: ui.origin.value,
+        destination: ui.destination.value,
+        mode,
+        passengers,
+        luggage: ui.luggage.checked,
+        roundTrip
       });
 
       if (!Number.isFinite(result.total) || result.total < 0) {
         renderEmpty(true);
-        return ui.transport;
+        return ui.origin;
       }
-
-      const share = (result.total - PRICE_RANGE.min) / (PRICE_RANGE.max - PRICE_RANGE.min);
-      const percent = Math.round(Math.min(1, Math.max(0, share)) * 100);
-      const level = percent < 34 ? "Економ" : percent < 67 ? "Стандарт" : "Преміум";
 
       ui.status.textContent = "Розраховано";
       ui.status.classList.remove("text-danger");
       ui.status.classList.add("text-brand-primary");
-      ui.bufferSummary.textContent = formatHours(buffer);
+      ui.distance.textContent = `≈${NBSP}${result.distance.toLocaleString("uk-UA")}${NBSP}км`;
       ui.total.textContent = formatPrice(result.total);
-      ui.meterValue.textContent = level;
-      ui.meterBar.style.width = `${Math.max(percent, 4)}%`;
-      ui.meterTrack.setAttribute(
-        "aria-label",
-        `Ціновий рівень: ${level}, ${percent}% діапазону від ${formatPrice(PRICE_RANGE.min)} до ${formatPrice(PRICE_RANGE.max)}`
-      );
+      ui.duration.textContent = `≈${NBSP}${formatDuration(result.hours)}` + (roundTrip ? " в один бік" : "");
+      ui.perPerson.textContent = formatPrice(result.perPerson);
+      ui.fareLabel.textContent = MODES[mode].perPassenger
+        ? `Квитки (${formatPassengers(passengers)}${roundTrip ? ", туди й назад" : ""})`
+        : `Пальне${roundTrip ? " (туди й назад)" : ""}`;
       itemKeys.forEach((key) => {
-        itemOutputs[key].textContent = formatPrice(result.items[key]);
+        const value = result.items[key];
+        itemOutputs[key].textContent = key === "discount" && value ? `−${formatPrice(value)}` : formatPrice(value);
       });
       ui.explanation.textContent =
-        `${ui.origin.value.trim()} — ${ui.destination.value.trim()}: ${lowerFirst(selectedText(ui.transport))} ` +
-        `через пункт «${selectedText(ui.border)}», ${formatTransfers(transfers)}. ` +
+        `${CITIES[ui.origin.value].name} → ${CITIES[ui.destination.value].name}: ${MODES[mode].name}, ` +
+        `${formatPassengers(passengers)}, з урахуванням ~${MODES[mode].border}${NBSP}год на кордоні. ` +
         "Ціни орієнтовні, на основі демонстраційних тарифів.";
 
       return null;
@@ -359,8 +280,7 @@
 
     form.addEventListener("input", update);
 
-    // Значення вже перераховане подією input; change лише позначає поле «торкнутим»,
-    // тому перераховуємо повторно тільки коли це сталося вперше (щоб показати помилку).
+    // change лише позначає поле «торкнутим»; перераховуємо повторно тільки вперше (щоб показати помилку).
     form.addEventListener("change", (event) => {
       if (!touched.has(event.target)) {
         touched.add(event.target);
@@ -378,12 +298,8 @@
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       fields.forEach((field) => touched.add(field.input));
-
       const firstInvalid = update();
-
-      if (firstInvalid) {
-        firstInvalid.focus();
-      }
+      if (firstInvalid) firstInvalid.focus();
     });
 
     form.addEventListener("reset", () => {
@@ -396,9 +312,6 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("trip-cost-form");
-
-    if (form) {
-      initCalculator(form);
-    }
+    if (form) initCalculator(form);
   });
 })();
