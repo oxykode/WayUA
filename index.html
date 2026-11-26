@@ -169,6 +169,8 @@
                 <label class="mb-2 block text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary" for="trip-destination">Місто призначення <span class="text-danger" aria-hidden="true">*</span></label>
                 <select class="block min-h-12 w-full rounded-control border border-field bg-page px-3 py-2 text-body text-copy-primary outline-none transition duration-180 focus:border-brand-secondary focus:ring-2 focus:ring-brand-tint" id="trip-destination" name="destination" required aria-describedby="trip-destination-error">
                   <option value="">Оберіть місто</option>
+                  <option value="przemysl">Перемишль</option>
+                  <option value="chelm">Холм</option>
                   <option value="krakow">Краків</option>
                   <option value="warsaw">Варшава</option>
                   <option value="budapest">Будапешт</option>
@@ -181,7 +183,7 @@
                 <p class="mt-1 hidden text-body-xs text-danger" id="trip-destination-error" role="alert"></p>
               </div>
 
-              <fieldset class="sm:col-span-2" id="trip-transport-group" aria-describedby="trip-transport-hint">
+              <fieldset class="sm:col-span-2" id="trip-transport-group" aria-describedby="trip-transport-hint trip-mode-error">
                 <legend class="mb-2 text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary">Транспорт</legend>
                 <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-bus">
@@ -190,7 +192,7 @@
                   </label>
                   <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-train">
                     <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-train" name="mode" type="radio" value="train">
-                    <span class="grid leading-tight"><span>Потяг</span><span class="text-caption text-copy-secondary">2,0 грн/км · ~70 км/год</span></span>
+                    <span class="grid leading-tight"><span>Потяг УЗ</span><span class="text-caption text-copy-secondary" id="trip-train-caption">2,0 грн/км · лише прямі рейси</span></span>
                   </label>
                   <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-car">
                     <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-car" name="mode" type="radio" value="car">
@@ -201,7 +203,8 @@
                     <span class="grid leading-tight"><span>Зручний трансфер</span><span class="text-caption text-copy-secondary">потяг до кордону + автобус · +150 грн/особу</span></span>
                   </label>
                 </div>
-                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transport-hint">Автобус, потяг і трансфер — ціна за кожного пасажира; авто — пальне й «Зелена карта» діляться на всіх. Трансфер: потяг до хабу (Перемишль або Чоп), далі автобус, пересадка гарантована.</p>
+                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transport-hint">Автобус, потяг і трансфер — ціна за кожного пасажира; авто — пальне й «Зелена карта» діляться на всіх. Трансфер: потяг до хабу (Перемишль або Чоп), далі автобус, пересадка гарантована. Потяг УЗ доступний лише там, де є прямий рейс Укрзалізниці.</p>
+                <p class="mt-1 hidden text-body-xs text-danger" id="trip-mode-error" role="alert"></p>
               </fieldset>
 
               <div class="min-w-0">

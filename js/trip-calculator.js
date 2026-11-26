@@ -12,6 +12,8 @@
     dnipro: { name: "Дніпро", lat: 48.46, lon: 35.05 },
     vinnytsia: { name: "Вінниця", lat: 49.23, lon: 28.47 },
     uzhhorod: { name: "Ужгород", lat: 48.62, lon: 22.29 },
+    przemysl: { name: "Перемишль", lat: 49.78, lon: 22.77 },
+    chelm: { name: "Холм", lat: 51.14, lon: 23.47 },
     krakow: { name: "Краків", lat: 50.06, lon: 19.94 },
     warsaw: { name: "Варшава", lat: 52.23, lon: 21.01 },
     budapest: { name: "Будапешт", lat: 47.5, lon: 19.04 },
@@ -23,7 +25,24 @@
   });
 
   const ORIGINS = Object.freeze(["kyiv", "lviv", "kharkiv", "odesa", "dnipro", "vinnytsia", "uzhhorod"]);
-  const DESTINATIONS = Object.freeze(["krakow", "warsaw", "budapest", "vienna", "prague", "berlin", "rome", "paris"]);
+  const DESTINATIONS = Object.freeze(["przemysl", "chelm", "krakow", "warsaw", "budapest", "vienna", "prague", "berlin", "rome", "paris"]);
+
+  // Прямі міжнародні потяги Укрзалізниці (за повідомленнями УЗ, графік 2025–2026; перевіряти на uz.gov.ua).
+  // from — міста виїзду з цього списку, де поїзд має зупинку; to — міста призначення.
+  const UZ_TRAINS = Object.freeze([
+    { number: "67/68", route: "Київ — Варшава", from: ["kyiv"], to: ["warsaw"] },
+    { number: "23/24", route: "Київ — Холм", from: ["kyiv"], to: ["chelm"] },
+    { number: "31/32", route: "Київ — Перемишль", from: ["kyiv", "vinnytsia", "lviv"], to: ["przemysl"] },
+    { number: "63/64", route: "Харків — Київ — Перемишль «Оберіг»", from: ["kharkiv", "kyiv", "lviv"], to: ["przemysl"] },
+    { number: "73/74", route: "Дніпро — Перемишль", from: ["dnipro", "lviv"], to: ["przemysl"] },
+    { number: "7/8", route: "Ужгород — Будапешт — Відень", from: ["uzhhorod"], to: ["budapest", "vienna"] }
+  ]);
+
+  const findUzTrains = (origin, destination) =>
+    UZ_TRAINS.filter((train) => train.from.includes(origin) && train.to.includes(destination));
+
+  // До прикордонних міст трансфер не потрібен: туди веде прямий потяг.
+  const NO_TRANSFER = Object.freeze(["przemysl", "chelm"]);
 
   // perKm — за пасажира (автобус, потяг) або за авто (пальне); border — середнє очікування на кордоні, год.
   const MODES = Object.freeze({
@@ -40,6 +59,7 @@
     chop: { name: "Чоп", nameGenitive: "Чопа", lat: 48.43, lon: 22.2 }
   });
   const TRANSFER_HUB = Object.freeze({
+    przemysl: "przemysl", chelm: "przemysl",
     krakow: "przemysl", warsaw: "przemysl", prague: "przemysl", berlin: "przemysl", paris: "przemysl",
     budapest: "chop", vienna: "chop", rome: "chop"
   });
@@ -184,8 +204,13 @@
       duration: byId("trip-duration-value"),
       perPerson: byId("trip-per-person-value"),
       fareLabel: byId("trip-cost-item-fare-label"),
-      explanation: byId("trip-cost-explanation-text")
+      explanation: byId("trip-cost-explanation-text"),
+      modeError: byId("trip-mode-error"),
+      trainRadio: byId("trip-mode-train"),
+      trainCaption: byId("trip-train-caption"),
+      transferRadio: byId("trip-mode-transfer")
     };
+    const TRAIN_CAPTION_DEFAULT = ui.trainCaption ? ui.trainCaption.textContent : "";
 
     const itemKeys = ["fare", "insurance", "luggage", "guarantee", "service", "discount"];
     const itemOutputs = {};
@@ -255,6 +280,36 @@
         : "Оберіть міста, щоб побачити кошторис.";
     }
 
+    // Потяг доступний лише за наявності прямого рейсу УЗ; трансфер не має сенсу до прикордонних міст.
+    // Повертає текст помилки для вибраного транспорту (або порожній рядок) і список потягів.
+    function syncModeAvailability(mode) {
+      const origin = ui.origin.value;
+      const destination = ui.destination.value;
+      const citiesChosen = ORIGINS.includes(origin) && DESTINATIONS.includes(destination);
+      const trains = citiesChosen ? findUzTrains(origin, destination) : [];
+
+      ui.trainRadio.disabled = citiesChosen && !trains.length && mode !== "train";
+      ui.transferRadio.disabled = citiesChosen && NO_TRANSFER.includes(destination) && mode !== "transfer";
+      ui.trainCaption.textContent = !citiesChosen
+        ? TRAIN_CAPTION_DEFAULT
+        : trains.length
+          ? `№${trains.map((train) => train.number).join(", №")} · 2,0 грн/км`
+          : "немає прямого рейсу УЗ";
+
+      let message = "";
+      if (citiesChosen && mode === "train" && !trains.length) {
+        message = `Прямого потяга Укрзалізниці з міста ${CITIES[origin].name} до міста ${CITIES[destination].name} немає. ` +
+          "Оберіть «Зручний трансфер» або автобус.";
+      } else if (citiesChosen && mode === "transfer" && NO_TRANSFER.includes(destination)) {
+        message = `До міста ${CITIES[destination].name} пересадка не потрібна — ` +
+          (findUzTrains(origin, destination).length ? "оберіть «Потяг УЗ»." : "оберіть автобус або авто.");
+      }
+
+      ui.modeError.textContent = message;
+      ui.modeError.classList.toggle("hidden", !message);
+      return { message, trains };
+    }
+
     function update() {
       let firstInvalid = null;
       let hasVisibleErrors = false;
@@ -264,6 +319,12 @@
         if (message && !firstInvalid) firstInvalid = field.input;
         if (renderFieldError(field, message)) hasVisibleErrors = true;
       });
+
+      const modeCheck = syncModeAvailability(getMode());
+      if (modeCheck.message) {
+        hasVisibleErrors = true;
+        if (!firstInvalid) firstInvalid = form.querySelector('input[name="mode"]:checked') || ui.trainRadio;
+      }
 
       if (firstInvalid) {
         renderEmpty(hasVisibleErrors);
@@ -306,8 +367,11 @@
         const value = result.items[key];
         itemOutputs[key].textContent = key === "discount" && value ? `−${formatPrice(value)}` : formatPrice(value);
       });
+      const modeName = mode === "train"
+        ? `потяг УЗ №${modeCheck.trains[0].number} ${modeCheck.trains[0].route}`
+        : MODES[mode].name;
       ui.explanation.textContent =
-        `${CITIES[ui.origin.value].name} → ${result.hub ? result.hub.name + " → " : ""}${CITIES[ui.destination.value].name}: ${MODES[mode].name}, ` +
+        `${CITIES[ui.origin.value].name} → ${result.hub ? result.hub.name + " → " : ""}${CITIES[ui.destination.value].name}: ${modeName}, ` +
         `${formatPassengers(passengers)}, з урахуванням ~${MODES[mode].border}${NBSP}год на кордоні. ` +
         "Ціни орієнтовні, на основі демонстраційних тарифів.";
 
