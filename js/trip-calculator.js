@@ -41,8 +41,9 @@
   const findUzTrains = (origin, destination) =>
     UZ_TRAINS.filter((train) => train.from.includes(origin) && train.to.includes(destination));
 
-  // До прикордонних міст трансфер не потрібен: туди веде прямий потяг.
-  const NO_TRANSFER = Object.freeze(["przemysl", "chelm"]);
+  // Прикордонні міста призначення: сюди трансфер іде через Львів (потяг по Україні + автобус через кордон),
+  // а якщо з міста виїзду є прямий потяг УЗ — трансфер не потрібен.
+  const BORDER_DESTINATIONS = Object.freeze(["przemysl", "chelm"]);
 
   // perKm — за пасажира (автобус, потяг) або за авто (пальне); border — середнє очікування на кордоні, год.
   const MODES = Object.freeze({
@@ -55,14 +56,38 @@
 
   // Прикордонні хаби для трансферу: до Польщі, Чехії, Німеччини, Франції — через Перемишль; до Угорщини, Австрії, Італії — через Чоп.
   const HUBS = Object.freeze({
-    przemysl: { name: "Перемишль", nameGenitive: "Перемишля", lat: 49.78, lon: 22.77 },
-    chop: { name: "Чоп", nameGenitive: "Чопа", lat: 48.43, lon: 22.2 }
+    przemysl: { name: "Перемишль", nameGenitive: "Перемишля", lat: 49.78, lon: 22.77, busBorder: false },
+    chop: { name: "Чоп", nameGenitive: "Чопа", lat: 48.43, lon: 22.2, busBorder: false },
+    // Український хаб: кордон перетинає вже автобус, тому й очікування як в автобуса.
+    lviv: { name: "Львів", nameGenitive: "Львова", lat: 49.84, lon: 24.03, busBorder: true }
   });
   const TRANSFER_HUB = Object.freeze({
-    przemysl: "przemysl", chelm: "przemysl",
     krakow: "przemysl", warsaw: "przemysl", prague: "przemysl", berlin: "przemysl", paris: "przemysl",
     budapest: "chop", vienna: "chop", rome: "chop"
   });
+
+  // Хаб трансферу: до прикордонних міст — Львів; до решти — за таблицею вище,
+  // але Перемишль лише якщо з міста виїзду туди справді їде потяг УЗ (інакше пересадка у Львові).
+  function getTransferHubKey(origin, destination) {
+    if (BORDER_DESTINATIONS.includes(destination)) return "lviv";
+    const hub = TRANSFER_HUB[destination];
+    if (hub === "przemysl" && !findUzTrains(origin, "przemysl").length) return "lviv";
+    return hub;
+  }
+
+  // Причина, чому трансфер не підходить (або порожній рядок).
+  function transferProblem(origin, destination) {
+    if (BORDER_DESTINATIONS.includes(destination)) {
+      const trains = findUzTrains(origin, destination);
+      if (trains.length) {
+        return `З міста ${CITIES[origin].name} до міста ${CITIES[destination].name} їде прямий потяг №${trains[0].number} — оберіть «Потяг УЗ».`;
+      }
+    }
+    if (getTransferHubKey(origin, destination) === origin) {
+      return `Пересадка у місті ${CITIES[origin].name} не потрібна — ви виїжджаєте звідти. Оберіть автобус або авто.`;
+    }
+    return "";
+  }
 
   const RULES = Object.freeze({
     roadFactor: 1.25, // дороги довші за пряму лінію між містами
@@ -95,18 +120,22 @@
     let hours;
     let farePerTrip;
     let hub = null;
+    let borderHoursUsed;
 
     if (mode === "transfer") {
       // Сегмент 1: потяг до хабу; сегмент 2: автобус від хабу до міста призначення.
-      hub = HUBS[TRANSFER_HUB[destination]];
+      hub = HUBS[getTransferHubKey(origin, destination)];
       const trainKm = roadDistanceKm(CITIES[origin], hub);
       const busKm = roadDistanceKm(hub, CITIES[destination]);
+      const borderHours = hub.busBorder ? MODES.bus.border : transport.border;
       distance = trainKm + busKm;
-      hours = trainKm / MODES.train.speed + busKm / MODES.bus.speed + transport.border + transport.transferHours;
+      hours = trainKm / MODES.train.speed + busKm / MODES.bus.speed + borderHours + transport.transferHours;
+      borderHoursUsed = borderHours;
       farePerTrip = Math.round((trainKm * MODES.train.perKm + busKm * MODES.bus.perKm) * passengers);
     } else {
       distance = roadDistanceKm(CITIES[origin], CITIES[destination]);
       hours = distance / transport.speed + transport.border;
+      borderHoursUsed = transport.border;
       farePerTrip = Math.round(distance * transport.perKm * (transport.perPassenger ? passengers : 1));
     }
 
@@ -123,6 +152,7 @@
       distance,
       hours,
       hub,
+      borderHours: borderHoursUsed,
       items: { fare, insurance, luggage: luggageCost, guarantee, service, discount },
       total,
       perPerson: Math.round(total / passengers)
@@ -288,8 +318,10 @@
       const citiesChosen = ORIGINS.includes(origin) && DESTINATIONS.includes(destination);
       const trains = citiesChosen ? findUzTrains(origin, destination) : [];
 
+      const transferIssue = citiesChosen ? transferProblem(origin, destination) : "";
+
       ui.trainRadio.disabled = citiesChosen && !trains.length && mode !== "train";
-      ui.transferRadio.disabled = citiesChosen && NO_TRANSFER.includes(destination) && mode !== "transfer";
+      ui.transferRadio.disabled = Boolean(transferIssue) && mode !== "transfer";
       ui.trainCaption.textContent = !citiesChosen
         ? TRAIN_CAPTION_DEFAULT
         : trains.length
@@ -299,10 +331,9 @@
       let message = "";
       if (citiesChosen && mode === "train" && !trains.length) {
         message = `Прямого потяга Укрзалізниці з міста ${CITIES[origin].name} до міста ${CITIES[destination].name} немає. ` +
-          "Оберіть «Зручний трансфер» або автобус.";
-      } else if (citiesChosen && mode === "transfer" && NO_TRANSFER.includes(destination)) {
-        message = `До міста ${CITIES[destination].name} пересадка не потрібна — ` +
-          (findUzTrains(origin, destination).length ? "оберіть «Потяг УЗ»." : "оберіть автобус або авто.");
+          (transferIssue ? "Оберіть автобус або авто." : "Оберіть «Зручний трансфер» або автобус.");
+      } else if (mode === "transfer" && transferIssue) {
+        message = transferIssue;
       }
 
       ui.modeError.textContent = message;
@@ -372,7 +403,7 @@
         : MODES[mode].name;
       ui.explanation.textContent =
         `${CITIES[ui.origin.value].name} → ${result.hub ? result.hub.name + " → " : ""}${CITIES[ui.destination.value].name}: ${modeName}, ` +
-        `${formatPassengers(passengers)}, з урахуванням ~${MODES[mode].border}${NBSP}год на кордоні. ` +
+        `${formatPassengers(passengers)}, з урахуванням ~${result.borderHours}${NBSP}год на кордоні. ` +
         "Ціни орієнтовні, на основі демонстраційних тарифів.";
 
       return null;
