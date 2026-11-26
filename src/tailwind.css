@@ -7,8 +7,42 @@
 
 /* ---------- Галерея (Swiper): кольори з дизайн-токенів tailwind.config.js ---------- */
 .wayua-gallery .swiper {
+  position: relative;
+  overflow: hidden;
   padding: 4px 4px 48px;
 }
+/* Розкладка слайдера ще до того, як js/main.js підвантажить CSS Swiper: без цього слайди
+   на мить стають у стовпчик і сторінка «стрибає» (CLS). Значення збігаються зі Swiper:
+   1 / 2 / 3 слайди, відступ 16 px. */
+.wayua-gallery .swiper-wrapper {
+  display: flex;
+}
+.wayua-gallery .swiper-slide {
+  flex-shrink: 0;
+  width: 100%;
+  margin-right: 16px;
+}
+@media (min-width: 768px) {
+  .wayua-gallery .swiper:not(.swiper-initialized) .swiper-slide { width: calc((100% - 16px) / 2); }
+}
+@media (min-width: 1024px) {
+  .wayua-gallery .swiper:not(.swiper-initialized) .swiper-slide { width: calc((100% - 32px) / 3); }
+}
+.wayua-gallery .swiper-pagination {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+.wayua-gallery .swiper-button-prev,
+.wayua-gallery .swiper-button-next {
+  position: absolute;
+  top: 50%;
+  z-index: 10;
+}
+.wayua-gallery .swiper-button-prev { left: 10px; }
+.wayua-gallery .swiper-button-next { right: 10px; }
 /* Видима крапка 9 px, але область натискання 24×24 px (WCAG 2.5.8). */
 .wayua-gallery .swiper-pagination-bullet {
   position: relative;

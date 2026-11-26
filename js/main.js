@@ -161,17 +161,43 @@
     syncAutoplay();
   };
 
+  // CSS галереї (Swiper, Fancybox) підвантажується разом з ініціалізацією, а не під час завантаження
+  // сторінки: інакше кожен файл після першого кадру змушує браузер перераховувати розмітку всієї сторінки.
+  const GALLERY_STYLES = [
+    {
+      href: "https://cdn.jsdelivr.net/npm/swiper@11.2.10/swiper-bundle.min.css",
+      integrity: "sha384-gAPqlBuTCdtVcYt9ocMOYWrnBZ4XSL6q+4eXqwNycOr4iFczhNKtnYhF3NEXJM51"
+    },
+    {
+      href: "https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.36/dist/fancybox/fancybox.css",
+      integrity: "sha384-qlUhevqmCF5AxtnfkF0zXJClBzA6GJuX/UrLejCfE61bBGt+zo/My0AJ+ojVmUSb"
+    }
+  ];
+
+  const loadGalleryStyles = () => Promise.all(GALLERY_STYLES.map(({ href, integrity }) => new Promise((resolve) => {
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    link.integrity = integrity;
+    link.crossOrigin = "anonymous";
+    link.onload = resolve;
+    link.onerror = resolve; // галерея має запуститися навіть без стилів бібліотеки
+    document.head.appendChild(link);
+  })));
+
   if (galleryElement && typeof window.Swiper === "function") {
+    const startGallery = () => loadGalleryStyles().then(initGallery);
+
     if ("IntersectionObserver" in window) {
       const lazyObserver = new IntersectionObserver((entries, observer) => {
         if (entries.some((entry) => entry.isIntersecting)) {
           observer.disconnect();
-          initGallery();
+          startGallery();
         }
-      }, { rootMargin: "400px 0px" });
+      }, { rootMargin: "600px 0px" });
       lazyObserver.observe(galleryElement);
     } else {
-      initGallery();
+      startGallery();
     }
   }
 
