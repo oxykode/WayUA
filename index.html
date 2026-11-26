@@ -200,10 +200,14 @@
                   </label>
                   <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-transfer">
                     <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-transfer" name="mode" type="radio" value="transfer">
-                    <span class="grid leading-tight"><span>Зручний трансфер</span><span class="text-caption text-copy-secondary">потяг до кордону + автобус · +150 грн/особу</span></span>
+                    <span class="grid leading-tight"><span>Зручний трансфер</span><span class="text-caption text-copy-secondary">потяг + автобус з пересадкою · +150 грн/особу</span></span>
                   </label>
                 </div>
-                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transport-hint">Автобус, потяг і трансфер — ціна за кожного пасажира; авто — пальне й «Зелена карта» діляться на всіх. Трансфер: потяг до хабу (Перемишль або Чоп; до Перемишля й Холма — Львів), далі автобус, пересадка гарантована. Потяг УЗ доступний лише там, де є прямий рейс Укрзалізниці.</p>
+                <ul class="mt-2 grid list-disc gap-1 pl-4 text-body-xs text-copy-secondary" id="trip-transport-hint">
+                  <li>Автобус, потяг і трансфер оплачує кожен пасажир. В авто пальне й «Зелена карта» діляться на всіх, хто їде.</li>
+                  <li>«Потяг УЗ» можна обрати лише там, де Укрзалізниця має прямий рейс.</li>
+                  <li>«Зручний трансфер» — потяг до міста пересадки, далі автобус. Місто пересадки (Львів, Перемишль або Чоп) підбирається автоматично й видно в результаті.</li>
+                </ul>
                 <p class="mt-1 hidden text-body-xs text-danger" id="trip-mode-error" role="alert"></p>
               </fieldset>
 
