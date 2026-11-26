@@ -183,7 +183,7 @@
 
               <fieldset class="sm:col-span-2" id="trip-transport-group" aria-describedby="trip-transport-hint">
                 <legend class="mb-2 text-body-xs font-semibold uppercase tracking-[0.04em] text-copy-secondary">Транспорт</legend>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
                   <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-bus">
                     <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-bus" name="mode" type="radio" value="bus" checked>
                     <span class="grid leading-tight"><span>Автобус</span><span class="text-caption text-copy-secondary">1,6 грн/км · ~60 км/год</span></span>
@@ -196,8 +196,12 @@
                     <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-car" name="mode" type="radio" value="car">
                     <span class="grid leading-tight"><span>Авто</span><span class="text-caption text-copy-secondary">пальне 4,2 грн/км на авто</span></span>
                   </label>
+                  <label class="flex min-h-12 cursor-pointer items-center gap-2 rounded-control border border-muted bg-page px-3 py-2 text-body-sm" for="trip-mode-transfer">
+                    <input class="h-4 w-4 shrink-0 accent-brand-secondary" id="trip-mode-transfer" name="mode" type="radio" value="transfer">
+                    <span class="grid leading-tight"><span>Зручний трансфер</span><span class="text-caption text-copy-secondary">потяг до кордону + автобус · +150 грн/особу</span></span>
+                  </label>
                 </div>
-                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transport-hint">Автобус і потяг — ціна за кожного пасажира; авто — пальне й «Зелена карта» діляться на всіх.</p>
+                <p class="mt-1 text-body-xs text-copy-secondary" id="trip-transport-hint">Автобус, потяг і трансфер — ціна за кожного пасажира; авто — пальне й «Зелена карта» діляться на всіх. Трансфер: потяг до хабу (Перемишль або Чоп), далі автобус, пересадка гарантована.</p>
               </fieldset>
 
               <div class="min-w-0">
@@ -266,6 +270,7 @@
                 <li class="flex items-baseline justify-between gap-3"><span>«Зелена карта» (страховка авто)</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-insurance">—</span></li>
                 <li class="flex items-baseline justify-between gap-3"><span>Великий багаж</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-luggage">—</span></li>
                 <li class="flex items-baseline justify-between gap-3"><span>Сервісний збір (5%, мін. 150 грн)</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-service">—</span></li>
+                <li class="flex items-baseline justify-between gap-3"><span>Гарантована пересадка (трансфер)</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-guarantee">—</span></li>
                 <li class="flex items-baseline justify-between gap-3"><span>Знижка «туди й назад»</span><span class="shrink-0 font-semibold text-copy-primary" id="trip-cost-item-discount">—</span></li>
               </ul>
               <p class="mt-3 text-body-sm text-copy-secondary" id="trip-cost-explanation-text">Оберіть міста, щоб побачити кошторис.</p>

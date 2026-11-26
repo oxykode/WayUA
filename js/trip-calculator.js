@@ -29,7 +29,19 @@
   const MODES = Object.freeze({
     bus: { name: "автобус", perKm: 1.6, perPassenger: true, speed: 60, border: 4 },
     train: { name: "потяг", perKm: 2.0, perPassenger: true, speed: 70, border: 2 },
-    car: { name: "авто", perKm: 4.2, perPassenger: false, speed: 75, border: 6, insurance: 1200, maxPassengers: 5 }
+    car: { name: "авто", perKm: 4.2, perPassenger: false, speed: 75, border: 6, insurance: 1200, maxPassengers: 5 },
+    // Зручний трансфер: потяг до прикордонного хабу, далі автобус; одне бронювання з гарантованою пересадкою.
+    transfer: { name: "зручний трансфер", perPassenger: true, border: 2, transferHours: 1, guaranteePerPassenger: 150 }
+  });
+
+  // Прикордонні хаби для трансферу: до Польщі, Чехії, Німеччини, Франції — через Перемишль; до Угорщини, Австрії, Італії — через Чоп.
+  const HUBS = Object.freeze({
+    przemysl: { name: "Перемишль", nameGenitive: "Перемишля", lat: 49.78, lon: 22.77 },
+    chop: { name: "Чоп", nameGenitive: "Чопа", lat: 48.43, lon: 22.2 }
+  });
+  const TRANSFER_HUB = Object.freeze({
+    krakow: "przemysl", warsaw: "przemysl", prague: "przemysl", berlin: "przemysl", paris: "przemysl",
+    budapest: "chop", vienna: "chop", rome: "chop"
   });
 
   const RULES = Object.freeze({
@@ -58,21 +70,40 @@
   // Чиста функція: лише рахує, не торкається DOM.
   function calculateTrip({ origin, destination, mode, passengers, luggage, roundTrip }) {
     const transport = MODES[mode];
-    const distance = roadDistanceKm(CITIES[origin], CITIES[destination]);
     const trips = roundTrip ? 2 : 1;
+    let distance;
+    let hours;
+    let farePerTrip;
+    let hub = null;
 
-    const fare = Math.round(distance * transport.perKm * (transport.perPassenger ? passengers : 1)) * trips;
+    if (mode === "transfer") {
+      // Сегмент 1: потяг до хабу; сегмент 2: автобус від хабу до міста призначення.
+      hub = HUBS[TRANSFER_HUB[destination]];
+      const trainKm = roadDistanceKm(CITIES[origin], hub);
+      const busKm = roadDistanceKm(hub, CITIES[destination]);
+      distance = trainKm + busKm;
+      hours = trainKm / MODES.train.speed + busKm / MODES.bus.speed + transport.border + transport.transferHours;
+      farePerTrip = Math.round((trainKm * MODES.train.perKm + busKm * MODES.bus.perKm) * passengers);
+    } else {
+      distance = roadDistanceKm(CITIES[origin], CITIES[destination]);
+      hours = distance / transport.speed + transport.border;
+      farePerTrip = Math.round(distance * transport.perKm * (transport.perPassenger ? passengers : 1));
+    }
+
+    const fare = farePerTrip * trips;
     const insurance = transport.insurance || 0;
     const luggageCost = luggage && transport.perPassenger ? RULES.luggagePerPassenger * passengers * trips : 0;
-    const discount = roundTrip ? Math.round((fare + luggageCost) * RULES.roundTripDiscount) : 0;
-    const subtotal = fare + insurance + luggageCost - discount;
+    const guarantee = (transport.guaranteePerPassenger || 0) * passengers * trips;
+    const discount = roundTrip ? Math.round((fare + luggageCost + guarantee) * RULES.roundTripDiscount) : 0;
+    const subtotal = fare + insurance + luggageCost + guarantee - discount;
     const service = Math.max(RULES.serviceMin, Math.round(subtotal * RULES.serviceRate));
     const total = subtotal + service;
 
     return {
       distance,
-      hours: distance / transport.speed + transport.border,
-      items: { fare, insurance, luggage: luggageCost, service, discount },
+      hours,
+      hub,
+      items: { fare, insurance, luggage: luggageCost, guarantee, service, discount },
       total,
       perPerson: Math.round(total / passengers)
     };
@@ -156,7 +187,7 @@
       explanation: byId("trip-cost-explanation-text")
     };
 
-    const itemKeys = ["fare", "insurance", "luggage", "service", "discount"];
+    const itemKeys = ["fare", "insurance", "luggage", "guarantee", "service", "discount"];
     const itemOutputs = {};
     itemKeys.forEach((key) => {
       itemOutputs[key] = byId(`trip-cost-item-${key}`);
@@ -263,15 +294,20 @@
       ui.total.textContent = formatPrice(result.total);
       ui.duration.textContent = `≈${NBSP}${formatDuration(result.hours)}` + (roundTrip ? " в один бік" : "");
       ui.perPerson.textContent = formatPrice(result.perPerson);
-      ui.fareLabel.textContent = MODES[mode].perPassenger
-        ? `Квитки (${formatPassengers(passengers)}${roundTrip ? ", туди й назад" : ""})`
-        : `Пальне${roundTrip ? " (туди й назад)" : ""}`;
+      const tripNote = roundTrip ? ", туди й назад" : "";
+      if (mode === "transfer") {
+        ui.fareLabel.textContent = `Потяг до ${result.hub.nameGenitive} + автобус (${formatPassengers(passengers)}${tripNote})`;
+      } else if (MODES[mode].perPassenger) {
+        ui.fareLabel.textContent = `Квитки (${formatPassengers(passengers)}${tripNote})`;
+      } else {
+        ui.fareLabel.textContent = `Пальне${roundTrip ? " (туди й назад)" : ""}`;
+      }
       itemKeys.forEach((key) => {
         const value = result.items[key];
         itemOutputs[key].textContent = key === "discount" && value ? `−${formatPrice(value)}` : formatPrice(value);
       });
       ui.explanation.textContent =
-        `${CITIES[ui.origin.value].name} → ${CITIES[ui.destination.value].name}: ${MODES[mode].name}, ` +
+        `${CITIES[ui.origin.value].name} → ${result.hub ? result.hub.name + " → " : ""}${CITIES[ui.destination.value].name}: ${MODES[mode].name}, ` +
         `${formatPassengers(passengers)}, з урахуванням ~${MODES[mode].border}${NBSP}год на кордоні. ` +
         "Ціни орієнтовні, на основі демонстраційних тарифів.";
 
